@@ -1,0 +1,70 @@
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring4-4.dtd">
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorator="layout">
+<head>
+<title>Erro 403</title>
+</head>
+<body>
+	<div layout:fragment="content">
+
+		<div class="box box-default">
+			<div class="box-header with-border">
+				<h3 class="box-title">Pesquisa</h3>
+				<div class="box-tools pull-right">
+					<div class="has-feedback">
+						<input type="text" class="form-control input-sm"
+							placeholder="Search..." /> <span
+							class="glyphicon glyphicon-search form-control-feedback"></span>
+					</div>
+				</div>
+				<!-- /.box-tools -->
+			</div>
+		</div>
+		<!-- /.box -->
+
+		<p class="lead">Dashboard Administrativo</p>
+
+		<div class="content-wrapper">
+			<!-- Content Header (Page header) -->
+			<section class="content-header">
+				<h1>403 Error Page</h1>
+				<ol class="breadcrumb">
+					<li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
+					<li><a href="#">Examples</a></li>
+					<li class="active">403 error</li>
+				</ol>				
+			</section>
+
+			<!-- Main content -->
+			<section class="content">
+				<div class="error-page">
+					<h2 class="headline text-yellow">403</h2>
+
+					<div class="error-content">
+						<h3>
+							<i class="fa fa-warning text-yellow"></i> Oops! Access Denied!.
+						</h3>
+
+						<p>
+							We could not find the page you were looking for. Meanwhile, you
+							may <a href="../../index.html">return to dashboard</a> or try
+							using the search form.
+							
+							Message Access is denied -
+							Description The server understood the request but refuses to authorize it.							
+						</p>
+
+					</div>
+					<!-- /.error-content -->
+				</div>
+				<!-- /.error-page -->
+			</section>
+			<!-- /.content -->
+		</div>
+		<!-- /.content-wrapper -->
+
+	</div>
+
+</body>
+</html>

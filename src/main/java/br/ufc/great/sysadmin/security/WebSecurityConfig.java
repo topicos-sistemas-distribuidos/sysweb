@@ -1,11 +1,17 @@
 package br.ufc.great.sysadmin.security;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.sql.DataSource;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
@@ -13,10 +19,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.JdbcUserDetailsManager;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
-
-import javax.sql.DataSource;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Classe de configuração do Spring Security
@@ -32,6 +34,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
+    	http.sessionManagement()
+        .sessionCreationPolicy(SessionCreationPolicy.ALWAYS);
+
     	http.authorizeRequests()        
         		.antMatchers("/register").permitAll()
                 .antMatchers("/bootstrap/**", "/dist/**", "/plugins/**").permitAll()
@@ -54,7 +59,16 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .invalidateHttpSession(true)
                 .logoutSuccessUrl("/login")
                 .permitAll();   
-        
+           	
+    	http.sessionManagement()
+    		.maximumSessions(2)
+    		.expiredUrl("/sessionExpired.html");
+    	
+    	http.sessionManagement().invalidSessionUrl("/invalidSession.html");   
+    	
+    	//http.sessionManagement()
+    	//  .sessionFixation().migrateSession();
+    	
     }
 
     @Autowired
@@ -81,6 +95,21 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
             User userDetails = new User("armando", encoder.encode("armando"), authorities);
             userDetailsService.createUser(userDetails);
         }
+        
+        /*
+    	String username = "armando";
+		Object principal = userDetailsService.loadUserByUsername(username);
+		Object credentials = null;		
+		UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(principal, credentials);
+    	SecurityContextHolder.getContext().setAuthentication(authentication);
+    	
+    	ou
+    	
+    	UserDetails principal = userDetailsService.loadUserByUsername("username"); 
+    	UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(principal, null, principal.getAuthorities()); 
+    	SecurityContextHolder.getContext().setAuthentication(authentication);s
+    	*/      
+        
     }
 
 }
