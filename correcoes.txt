@@ -1,0 +1,25 @@
+1. Erro ao tentar remover uma loja
+com.mysql.jdbc.exceptions.jdbc4.MySQLIntegrityConstraintViolationException: Cannot delete or update a parent row: a foreign key constraint fails (`promocity`.`my_stores_store_list`, CONSTRAINT `FK2ycadl6ruglvsydm1n0ld463r` FOREIGN KEY (`store_list_id`) REFERENCES `store` (`id`))
+	at sun.reflect.NativeConstructorAccessorImpl.newInstance0(Native Method) ~[na:1.8.0_91]
+	
+obs: Não pode remover loja por que ela está associada a um usuário
+
+solução: remover a loja do usuário em cascata
+
+2. Exibir a tela 500 erro interno do usuário
+
+3. Fazer o controle de sessão do usuário
+
+Revisar sugestões em https://www.baeldung.com/spring-security-session
+
+4. Ao logar pela primeira vez mostra a tela 404 de invalidSession
+
+java.lang.NullPointerException: null
+	at br.ufc.great.sysadmin.util.MySessionInfo.getCurrentUser(MySessionInfo.java:33) ~[classes/:na]
+	
+Mostra que está retornando User null
+
+Obs: este erro não acontece na janela privada
+- mas ao fazer o logout o erro volta, ou seja, depois do logout ao tentar fazer novo login mostra a tela 404 de invalidSession
+
+Possível solução: criar uma nova sessão ao fazer o login

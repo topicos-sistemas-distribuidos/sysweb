@@ -1,9 +1,6 @@
 package br.ufc.great.sysadmin.controller;
 
-import java.io.File;
 import java.io.IOException;
-import java.nio.file.FileSystems;
-import java.nio.file.Files;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -25,7 +22,6 @@ import br.ufc.great.sysadmin.model.Users;
 import br.ufc.great.sysadmin.service.AuthoritiesService;
 import br.ufc.great.sysadmin.service.MyStoresService;
 import br.ufc.great.sysadmin.service.UsersService;
-import br.ufc.great.sysadmin.util.Constantes;
 import br.ufc.great.sysadmin.util.GeradorSenha;
 
 /**

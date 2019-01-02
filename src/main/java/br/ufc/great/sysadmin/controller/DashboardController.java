@@ -1,19 +1,13 @@
 package br.ufc.great.sysadmin.controller;
 
 import java.security.Principal;
-import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
 
 import br.ufc.great.sysadmin.model.MyStores;
 import br.ufc.great.sysadmin.model.Store;
@@ -21,6 +15,7 @@ import br.ufc.great.sysadmin.model.Users;
 import br.ufc.great.sysadmin.service.MyStoresService;
 import br.ufc.great.sysadmin.service.StoresService;
 import br.ufc.great.sysadmin.service.UsersService;
+import br.ufc.great.sysadmin.util.MySessionInfo;
 
 /**
  * Faz o controle do Dashboard
@@ -32,9 +27,11 @@ public class DashboardController {
 	
 	private UsersService userService;
 	private StoresService storeService;	
-	private String userName; 
 	private MyStoresService myStoresService;
 	private String acesso;
+	
+	@Autowired
+	private MySessionInfo mySessionInfo;
 
 	@Autowired
 	public void setUserService(UsersService userService) {
@@ -50,6 +47,11 @@ public class DashboardController {
 	public void setMyStoresService(MyStoresService myStoresService) {
 		this.myStoresService = myStoresService;
 	}
+
+    @RequestMapping("/login")
+	public String login() {
+		return "login";
+	}
 	
 	/**
 	 * Verifica quais são as permissões do usuário logado e direciona para o dashboard correto
@@ -62,21 +64,21 @@ public class DashboardController {
     	    
     	String servico="/dashboard";
     	
-    	if (hasRole("ADMIN") && hasRole("USER") && hasRole("STOREOWNER")) {
+    	if (mySessionInfo.hasRole("ADMIN") && mySessionInfo.hasRole("USER") && mySessionInfo.hasRole("STOREOWNER")) {
     		servico = servico + "/admin";
     		return "redirect:"+servico;
     	}
-    	if (hasRole("USER") && !hasRole("ADMIN") && !hasRole("STOREOWNER")) {
+    	if (mySessionInfo.hasRole("USER") && !mySessionInfo.hasRole("ADMIN") && !mySessionInfo.hasRole("STOREOWNER")) {
     		servico = servico + "/user";
     		return "redirect:"+servico;
     	}
-    	if (hasRole("STOREOWNER") && hasRole("USER")) {
+    	if (mySessionInfo.hasRole("STOREOWNER") && mySessionInfo.hasRole("USER")) {
     		servico = servico + "/storeowner";
     		return "redirect:"+servico;
     	}
 		return "redirec:/logout";    	           	    	
     }
-
+    
     /**
      * Carrega o dashboard do usuário administrador do sistema
      * @param model
@@ -87,16 +89,13 @@ public class DashboardController {
     public String indexAdmin(Model model, Principal principal) {
     	int totalUsers=0;
     	int totalStores=0;
-    	int totalPromotions=0;
-    	int totalCoupons=0;
     	
     	totalUsers = (int) this.userService.count();
     	totalStores = (int) this.storeService.count();
-    	this.userName = principal.getName();
     	
-    	Users loginUser = userService.getUserByUserName(userName);
+    	Users loginUser = userService.getUserByUserName(mySessionInfo.getCurrentUser().getUsername());
     	
-    	checkAccessControl();
+    	acesso = mySessionInfo.getAcesso();
     	    	
     	model.addAttribute("totalUsers", totalUsers);
     	model.addAttribute("totalStores", totalStores);
@@ -115,12 +114,11 @@ public class DashboardController {
      * @return
      */
     @RequestMapping("/dashboard/user")
-    public String indexUser(Model model, Principal principal) {    	
-    	this.userName = principal.getName();    	
+    public String indexUser(Model model, Principal principal) {    	    	
     	int totalUsers = (int) this.userService.count();    	
-    	Users loginUser = userService.getUserByUserName(userName);
+    	Users loginUser = mySessionInfo.getCurrentUser();
     	    	
-    	checkAccessControl();
+    	acesso = mySessionInfo.getAcesso();
     	
     	model.addAttribute("loginusername", loginUser.getUsername());
     	model.addAttribute("loginemailuser", loginUser.getEmail());
@@ -139,8 +137,8 @@ public class DashboardController {
      */
     @RequestMapping("/dashboard/storeowner")
     public String indexStoreOwner(Model model, Principal principal) {
-    	this.userName = principal.getName();
-    	Users loginUser = userService.getUserByUserName(userName);    	    	
+    
+    	Users loginUser = mySessionInfo.getCurrentUser();    	    	
     	int totalMyStores=0;    	
     	MyStores myStores = new MyStores();
     	List<Store> myStoresList = new LinkedList<Store>();    	
@@ -152,7 +150,7 @@ public class DashboardController {
     	}
     	totalMyStores = myStoresList.size();    	
     	    	    	
-    	checkAccessControl();
+    	acesso = mySessionInfo.getAcesso();
         	
     	model.addAttribute("totalStores", totalMyStores);
     	model.addAttribute("loginusername", loginUser.getUsername());
@@ -162,35 +160,5 @@ public class DashboardController {
     	    	
         return "dashboard/indexStoreOwner";
     }
-    
-    /**
-     * Checa se uma determinada regra existe na lista de permissoes do usuário logado
-     * @param role
-     * @return
-     */
-    private boolean hasRole(String role) {
-    	  Collection<GrantedAuthority> authorities = (Collection<GrantedAuthority>)SecurityContextHolder.getContext().getAuthentication().getAuthorities();     
-    	  boolean hasRole = false;
-    	  
-    	  for (GrantedAuthority authority : authorities) {
-    	     hasRole = authority.getAuthority().equals(role);
-    	     if (hasRole) {
-    		  break;
-    	     }
-    	  }
-    	  
-    	  return hasRole;
-    }  
-    
-    /**
-     * Verifica se o usuário logou como administrador
-     */
-	private void checkAccessControl() {
-		if (hasRole("ADMIN")) {
-    		acesso = "ADMIN";
-    	}else {
-    		acesso = "";
-    	}
-	}
-
+       
 }
