@@ -35,39 +35,45 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
     	http.sessionManagement()
-        .sessionCreationPolicy(SessionCreationPolicy.ALWAYS);
+        .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED);
 
-    	http.authorizeRequests()        
-        		.antMatchers("/register").permitAll()
-                .antMatchers("/bootstrap/**", "/dist/**", "/plugins/**").permitAll()
+    	http.authorizeRequests()                		
+                .antMatchers("/bootstrap/**").permitAll()
+                .antMatchers("/dist/**").permitAll()
+                .antMatchers("/plugins/**").permitAll()
+                .antMatchers("/register").permitAll()
+                .antMatchers("/sessionExpired").permitAll()
+                .antMatchers("/invalidSession").permitAll()
                 .antMatchers("/admin/**").hasRole("ADMIN")
                 .antMatchers("/accesscontrol/**").hasAnyAuthority("ADMIN")
                 .antMatchers("/users").hasAnyAuthority("ADMIN")
                 .antMatchers("/users/").hasAnyAuthority("ADMIN")
                 .antMatchers("/stores").hasAnyAuthority("ADMIN")
                 .antMatchers("/stores/").hasAnyAuthority("ADMIN")
+                .antMatchers("/db/**").access("hasRole('ADMIN') and hasRole('DBA')")
                 .anyRequest().authenticated()
                 .and()
             .formLogin()
-                .failureUrl("/login?error")
-                .loginPage("/login")
-                .defaultSuccessUrl("/")
-                .permitAll()
+            	.loginPage("/login")
+            	.permitAll()
+            	.defaultSuccessUrl("/")
+            	.failureUrl("/login?error")                                          
                 .and()
             .logout()
                 .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
+                .deleteCookies("auth_code", "JSESSIONID")
                 .invalidateHttpSession(true)
                 .logoutSuccessUrl("/login")
                 .permitAll();   
            	
     	http.sessionManagement()
     		.maximumSessions(2)
-    		.expiredUrl("/sessionExpired.html");
+    		.expiredUrl("/sessionExpired");
     	
-    	http.sessionManagement().invalidSessionUrl("/invalidSession.html");   
+    	http.sessionManagement().invalidSessionUrl("/invalidSession");   
     	
-    	//http.sessionManagement()
-    	//  .sessionFixation().migrateSession();
+    	http.sessionManagement()
+    	  .sessionFixation().migrateSession();
     	
     }
 
@@ -95,20 +101,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
             User userDetails = new User("armando", encoder.encode("armando"), authorities);
             userDetailsService.createUser(userDetails);
         }
-        
-        /*
-    	String username = "armando";
-		Object principal = userDetailsService.loadUserByUsername(username);
-		Object credentials = null;		
-		UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(principal, credentials);
-    	SecurityContextHolder.getContext().setAuthentication(authentication);
-    	
-    	ou
-    	
-    	UserDetails principal = userDetailsService.loadUserByUsername("username"); 
-    	UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(principal, null, principal.getAuthorities()); 
-    	SecurityContextHolder.getContext().setAuthentication(authentication);s
-    	*/      
         
     }
 

@@ -7,8 +7,9 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.context.annotation.ScopedProxyMode;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
 import br.ufc.great.sysadmin.model.Users;
@@ -27,15 +28,31 @@ public class MySessionInfo {
 		this.userService = userServices;
 	}
 
-    public Users getCurrentUser() {          	
-    	if (user == null) {	
-              	
-        	User usuario = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+	public UserDetails currentUserDetails(){
+	    SecurityContext securityContext = SecurityContextHolder.getContext();
+	    Authentication authentication = securityContext.getAuthentication();
+	    if (authentication != null) {
+	        Object principal = authentication.getPrincipal();
+	        return principal instanceof UserDetails ? (UserDetails) principal : null;
+	    }
+	    return null;
+	}
+	
+    public Users getCurrentUser() {
+    	String username="";
+    	
+    	if (user == null) {	              	
+    		Object principal = currentUserDetails();
+    		
+    		if (principal != null) {
+    			username = ((UserDetails)principal).getUsername();
+    			user = userService.getUserByUserName(username);
+    			System.out.println("user name: " + username);
+    		}
         	
-        	String name = usuario.getUsername();
-        	user = userService.getUserByUserName(name);
         }
-        return user;
+        
+    	return user;
     }
     
     /**
@@ -47,22 +64,28 @@ public class MySessionInfo {
     	boolean hasRole = false;
 
     	Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-    	Collection<GrantedAuthority> authorities = (Collection<GrantedAuthority>) authentication.getAuthorities();
+    	
+    	if (authentication != null) {
+    		
+        	Collection<GrantedAuthority> authorities = (Collection<GrantedAuthority>) authentication.getAuthorities();
 
-    	if (authorities != null) {  
+        	if (authorities != null) {  
 
-    		for (GrantedAuthority authority : authorities) {
-    			hasRole = authority.getAuthority().equals(role);
-    			if (hasRole) {
-    				break;
-    			}
-    		}
+        		for (GrantedAuthority authority : authorities) {
+        			hasRole = authority.getAuthority().equals(role);
+        			if (hasRole) {
+        				break;
+        			}
+        		}
 
-    		return hasRole;
+        		return hasRole;
+        	}	
     	}
     	else {
     		return false;
     	}
+		
+    	return hasRole;
     }  
     
     /**

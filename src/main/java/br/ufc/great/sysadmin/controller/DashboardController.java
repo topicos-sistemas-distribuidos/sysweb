@@ -47,6 +47,11 @@ public class DashboardController {
 	public void setMyStoresService(MyStoresService myStoresService) {
 		this.myStoresService = myStoresService;
 	}
+
+    @RequestMapping("/login")
+	public String login() {
+		return "login";
+	}
 	
 	/**
 	 * Verifica quais são as permissões do usuário logado e direciona para o dashboard correto
@@ -73,7 +78,7 @@ public class DashboardController {
     	}
 		return "redirec:/logout";    	           	    	
     }
-
+    
     /**
      * Carrega o dashboard do usuário administrador do sistema
      * @param model
