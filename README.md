@@ -1,5 +1,5 @@
-# Promocity
-Aplicação cliente que manipula o banco do promocity (http://www.github.com/armandossrecife/promocity). 
+# SysWeb
+Aplicação web exemplo 
 
 Features
 ---
