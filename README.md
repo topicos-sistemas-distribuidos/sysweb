@@ -47,6 +47,7 @@ Characteristics
 TODO
 ---
 
+* Atualmente a aplicação aponta para o banco promocity, com isso, é preciso fazer os ajustes necessários apontar para o banco demo da aplicação restapi https://github.com/topicos-sistemas-distribuidos/restapi. 
 * Search in the listing;
 * Model of Dialog;
 * Template for sending e-mail with template;
