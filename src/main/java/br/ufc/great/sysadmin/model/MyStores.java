@@ -10,6 +10,7 @@ import javax.persistence.OneToOne;
 
 @Entity
 public class MyStores extends AbstractModel<Long>{
+	private static final long serialVersionUID = 1L;
 	@OneToOne
 	private Users user;
 	@OneToMany

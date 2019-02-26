@@ -4,6 +4,7 @@ import javax.persistence.Entity;
 
 @Entity
 public class Authorities extends AbstractModel<Long>{
+	private static final long serialVersionUID = 1L;
 	private String username;
 	private String authority;
 	

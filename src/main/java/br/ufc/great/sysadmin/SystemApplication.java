@@ -15,7 +15,8 @@ import br.ufc.great.sysadmin.util.Constantes;
 public class SystemApplication {
 
 	public static void main(String[] args) {
-		String uploadsPath = new Constantes().uploadDirectory;
+		new Constantes();
+		String uploadsPath = Constantes.uploadDirectory;
 		
 		new File(uploadsPath).mkdir();
 		
