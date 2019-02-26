@@ -5,7 +5,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Service;
 
 import br.ufc.great.sysadmin.model.Users;
-import br.ufc.great.sysadmin.repository.UsersRepository;
+import br.ufc.great.sysadmin.repository.IUsersRepository;
 
 /**
  * Classe de serviço para consumir o repositório de dados de Usuário
@@ -16,7 +16,7 @@ import br.ufc.great.sysadmin.repository.UsersRepository;
 public class UsersService extends AbstractService<Users, Long>{
 
 	@Autowired
-	private UsersRepository usersRepository;
+	private IUsersRepository usersRepository;
 	
 	@Override
 	protected JpaRepository<Users, Long> getRepository(){

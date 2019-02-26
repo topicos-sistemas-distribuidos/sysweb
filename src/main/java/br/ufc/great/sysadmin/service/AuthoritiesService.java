@@ -7,12 +7,12 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Service;
 
 import br.ufc.great.sysadmin.model.Authorities;
-import br.ufc.great.sysadmin.repository.AuthoritiesRepository;
+import br.ufc.great.sysadmin.repository.IAuthoritiesRepository;
 
 @Service
 public class AuthoritiesService extends AbstractService<Authorities, Long>{
 	@Autowired
-	private AuthoritiesRepository authoritiesRepository; 
+	private IAuthoritiesRepository authoritiesRepository; 
 	
 	@Override
 	protected JpaRepository<Authorities, Long> getRepository(){

@@ -5,7 +5,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Service;
 
 import br.ufc.great.sysadmin.model.Store;
-import br.ufc.great.sysadmin.repository.StoresRepository;
+import br.ufc.great.sysadmin.repository.IStoresRepository;
 
 /**
  * Class the manipulate the repository of Stores
@@ -15,7 +15,7 @@ import br.ufc.great.sysadmin.repository.StoresRepository;
 @Service
 public class StoresService extends AbstractService<Store, Long>{
 	@Autowired
-	StoresRepository storesRepository;
+	IStoresRepository storesRepository;
 	
 	//public PromotionArea globalPromotionArea = PromotionArea.getInstance();
 

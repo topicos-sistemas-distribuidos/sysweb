@@ -6,13 +6,13 @@ import org.springframework.stereotype.Service;
 
 import br.ufc.great.sysadmin.model.MyStores;
 import br.ufc.great.sysadmin.model.Users;
-import br.ufc.great.sysadmin.repository.MyStoresRepository;
+import br.ufc.great.sysadmin.repository.IMyStoresRepository;
 
 @Service
 public class MyStoresService extends AbstractService<MyStores, Long>{
 
 	@Autowired
-	private MyStoresRepository myStoresRepository; 
+	private IMyStoresRepository myStoresRepository; 
 	
 	@Override
 	protected JpaRepository<MyStores, Long> getRepository() {		

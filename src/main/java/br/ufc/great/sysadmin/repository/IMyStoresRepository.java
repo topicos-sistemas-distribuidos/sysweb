@@ -7,6 +7,6 @@ import br.ufc.great.sysadmin.model.MyStores;
 import br.ufc.great.sysadmin.model.Users;
 
 @Repository
-public interface MyStoresRepository extends JpaRepository<MyStores, Long> {
+public interface IMyStoresRepository extends JpaRepository<MyStores, Long> {
 	MyStores findByUser(Users user);
 }
