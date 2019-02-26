@@ -17,19 +17,33 @@ Sobre as operações para execução da aplicação
 2. É preciso ter o mysql 5 instalado na sua instância.
 - Obs: algumas vezes você pode enfrentar problemas com o driver mysql se você estiver usando mysql> 5.6, por exemplo se você tiver usando mysql 8 ou posterior, então você tem que substituir o driver de acordo com sua versão. Assim, é necessário atualizar as dependências do pom.xml de acordo com sua configuração e versão local.
 
-3. Rode o script de banco de dados e cadastre o usuário admin (armando) com senha armando.
+3. Crie o banco demo.
+```
+mysql> create database dbsysweb
+```
 
-4. Limpe o projeto via comando clean do maven.
+4. Rode o script restaura-dbsysweb.sql para criar as tabelas com os dados de exemplo.
+```
+mysql> source scripts/sql/restaura-dbsysweb.sql
+```
+
+5. Usuário admin (armando) tem senha armando.
+
+6. Limpe o projeto via comando clean do maven.
 ```
 $mvn clean
 ```
-5. Compile o projeto via modo teste do maven. 
+7. Compile o projeto via modo teste do maven. 
 ```
 $mvn test
 ```
-6. Execute a classe principal (SystemApplication) do projeto via maven. 
+8. Execute a classe principal (SystemApplication) do projeto via maven. 
 ```
 $mvn spring-boot:run
+```
+9. Para os ambientes POSIX, é possível integrar todos esses comandos no seguinte pipe:
+```
+$mvn clean && mvn test && mvn spring-boot:run
 ```
 
 Por padrão a aplicação roda em http://localhost:8080/login
