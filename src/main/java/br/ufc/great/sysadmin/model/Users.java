@@ -21,7 +21,7 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
  */
 @Entity
 public class Users extends AbstractModel<Long>{
-	
+	private static final long serialVersionUID = 1L;
 	@Column(length=50)
 	private String username;
 	@Column(length=255)

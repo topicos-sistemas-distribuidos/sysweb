@@ -64,7 +64,8 @@ public class FileUploadController {
   @RequestMapping("/upload/selected/image/users/{idUser}")
   public String upload(@PathVariable(value = "idUser") Long idUser, Model model,@RequestParam("photouser") MultipartFile[] files) {
 	  StringBuilder fileNames = new StringBuilder();
-	  String uploadFilePath = new Constantes().uploadUserDirectory; 	  
+	  new Constantes();
+	  String uploadFilePath = Constantes.uploadUserDirectory; 	  
 	  String idAux = String.valueOf(idUser);
 	  
 	  for (MultipartFile file : files) {
@@ -93,7 +94,8 @@ public class FileUploadController {
   @RequestMapping(value = "/upload/image/users/{imageName}")
   @ResponseBody
   public byte[] getUserImage(@PathVariable(value = "imageName") String imageName) throws IOException {
-	  String uploadFilePath = new Constantes().uploadUserDirectory;
+	new Constantes();
+	String uploadFilePath = Constantes.uploadUserDirectory;
 	  
 	  File serverFile = new File(uploadFilePath + FileSystems.getDefault().getSeparator() + imageName + ".png");      
 	  File userPadrao = new File(uploadFilePath + FileSystems.getDefault().getSeparator() + "anonymous2.png");
@@ -110,7 +112,8 @@ public class FileUploadController {
   @RequestMapping(value = "/upload/image/{imageName}")
   @ResponseBody
   public byte[] getImage(@PathVariable(value = "imageName") String imageName) throws IOException {
-	  String uploadFilePath = new Constantes().uploadDirectory;
+	new Constantes();
+	String uploadFilePath = Constantes.uploadDirectory;
 	  
 	  File serverFile = new File(uploadFilePath + FileSystems.getDefault().getSeparator() + imageName + ".png");
       return Files.readAllBytes(serverFile.toPath());
