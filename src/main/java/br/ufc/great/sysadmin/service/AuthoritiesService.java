@@ -6,16 +6,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Service;
 
-import br.ufc.great.sysadmin.model.Authorities;
+import br.ufc.great.sysadmin.model.Role;
 import br.ufc.great.sysadmin.repository.IAuthoritiesRepository;
 
 @Service
-public class AuthoritiesService extends AbstractService<Authorities, Long>{
+public class AuthoritiesService extends AbstractService<Role, Long>{
 	@Autowired
 	private IAuthoritiesRepository authoritiesRepository; 
 	
 	@Override
-	protected JpaRepository<Authorities, Long> getRepository(){
+	protected JpaRepository<Role, Long> getRepository(){
 		return authoritiesRepository;
 	}
 
@@ -23,7 +23,7 @@ public class AuthoritiesService extends AbstractService<Authorities, Long>{
 	 * Lista todas as permissões registradas
 	 * @return List<Authorities> 
 	 */
-	public List<Authorities> getListAll() {
+	public List<Role> getListAll() {
 		return authoritiesRepository.findAll();
 	}
 

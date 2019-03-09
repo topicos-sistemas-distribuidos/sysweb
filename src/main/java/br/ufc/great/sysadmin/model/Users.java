@@ -1,5 +1,6 @@
 package br.ufc.great.sysadmin.model;
 
+import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -7,10 +8,13 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.ManyToMany;
+import javax.persistence.OneToMany;
 
 import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
 import org.hibernate.annotations.Type;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 
@@ -20,7 +24,7 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
  *
  */
 @Entity
-public class Users extends AbstractModel<Long>{
+public class Users extends AbstractModel<Long> implements UserDetails{	
 	private static final long serialVersionUID = 1L;
 	@Column(length=50)
 	private String username;
@@ -29,18 +33,20 @@ public class Users extends AbstractModel<Long>{
 	@Column(nullable = false)
 	@Type(type = "org.hibernate.type.NumericBooleanType")
 	private boolean enabled;
-	
-	private String email;
-	//private GPSPoint location;
+	@Column(length=255)
+	private String email;	
 	private double latitude=0;
 	private double longitude=0;
 	
+	@OneToMany(fetch = FetchType.EAGER)
+	private List<Role> roles = new LinkedList<Role>();
+	
 	@LazyCollection(LazyCollectionOption.FALSE)
-	@JsonBackReference
+	@JsonBackReference(value="user-friend")
 	@ManyToMany(fetch = FetchType.LAZY)
  	private List<Users> idFriendsList = new LinkedList<Users>();
-		
-	private String completename;
+	@Column(length=255)	
+	private String name;
 	
 	public Users() {
 		this.idFriendsList = new LinkedList<Users>();
@@ -53,9 +59,11 @@ public class Users extends AbstractModel<Long>{
 		this.email = email;
 	}
 	
+	@Override
 	public String getPassword() {
 		return password;
 	}
+	
 	public void setPassword(String password) {
 		this.password = password;
 	}
@@ -72,6 +80,7 @@ public class Users extends AbstractModel<Long>{
 		return id;
 	}
 
+	@Override
 	public String getUsername() {
 		return username;
 	}
@@ -80,6 +89,7 @@ public class Users extends AbstractModel<Long>{
 		this.username = username;
 	}
 
+	@Override
 	public boolean isEnabled() {
 		return enabled;
 	}
@@ -164,12 +174,40 @@ public class Users extends AbstractModel<Long>{
 		return this.getIdFriendsList().size();
 	}
 
-	public String getCompletename() {
-		return completename;
+	public String getName() {
+		return name;
 	}
 
-	public void setCompletename(String completename) {
-		this.completename = completename;
+	public void setName(String name) {
+		this.name = name;
 	}
-		
+
+	public List<Role> getRoles() {
+		return roles;
+	}
+
+	public void setRoles(List<Role> roles) {
+		this.roles = roles;
+	}
+
+	@Override
+	public Collection<? extends GrantedAuthority> getAuthorities() {
+		return (Collection<? extends GrantedAuthority>) this.getRoles();
+	}
+
+	@Override
+	public boolean isAccountNonExpired() {
+		return true;
+	}
+
+	@Override
+	public boolean isAccountNonLocked() {
+		return true;
+	}
+
+	@Override
+	public boolean isCredentialsNonExpired() {
+		return true;
+	}
+
 }

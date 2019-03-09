@@ -1,6 +1,6 @@
 -- MySQL dump 10.13  Distrib 5.7.19, for macos10.12 (x86_64)
 --
--- Host: localhost    Database: promocity
+-- Host: localhost    Database: dbsysweb
 -- ------------------------------------------------------
 -- Server version	5.7.19
 
@@ -87,7 +87,7 @@ CREATE TABLE `authorities` (
   UNIQUE KEY `authorities_idx_1` (`username`,`authority`),
   KEY `id` (`id`),
   CONSTRAINT `authorities_ibfk_1` FOREIGN KEY (`username`) REFERENCES `users` (`username`)
-) ENGINE=InnoDB AUTO_INCREMENT=24 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=26 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -96,7 +96,7 @@ CREATE TABLE `authorities` (
 
 LOCK TABLES `authorities` WRITE;
 /*!40000 ALTER TABLE `authorities` DISABLE KEYS */;
-INSERT INTO `authorities` VALUES ('armando','USER',1),('maria','USER',2),('francisco','USER',3),('carlos','USER',7),('vera','USER',8),('lucia','USER',9),('jota','USER',10),('david','USER',11),('tes','USER',12),('jose','USER',13),('ana','USER',14),('armando','ADMIN',15),('armando','STOREOWNER',16),('maria','STOREOWNER',17),('capitu','USER',18),('foca','USER',19),('foca','STOREOWNER',20),('josesilva','USER',21),('tica','USER',22),('teste','USER',23);
+INSERT INTO `authorities` VALUES ('armando','USER',1),('maria','USER',2),('francisco','USER',3),('carlos','USER',7),('vera','USER',8),('lucia','USER',9),('jota','USER',10),('david','USER',11),('tes','USER',12),('jose','USER',13),('ana','USER',14),('armando','ADMIN',15),('armando','STOREOWNER',16),('maria','STOREOWNER',17),('capitu','USER',18),('foca','USER',19),('foca','STOREOWNER',20),('josesilva','USER',21),('tica','USER',22),('teste','USER',23),('teste2','USER',24),('teste3','USER',25);
 /*!40000 ALTER TABLE `authorities` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -154,6 +154,30 @@ INSERT INTO `my_stores_store_list` VALUES (1,12),(1,13),(2,14);
 UNLOCK TABLES;
 
 --
+-- Table structure for table `role`
+--
+
+DROP TABLE IF EXISTS `role`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `role` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `nome` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `role`
+--
+
+LOCK TABLES `role` WRITE;
+/*!40000 ALTER TABLE `role` DISABLE KEYS */;
+INSERT INTO `role` VALUES (1,'ROLE_ADMIN');
+/*!40000 ALTER TABLE `role` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `store`
 --
 
@@ -199,9 +223,10 @@ CREATE TABLE `users` (
   `latitude` double NOT NULL,
   `longitude` double NOT NULL,
   `completename` varchar(255) DEFAULT NULL,
+  `name` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`username`),
   KEY `id` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=23 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=25 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -210,7 +235,7 @@ CREATE TABLE `users` (
 
 LOCK TABLES `users` WRITE;
 /*!40000 ALTER TABLE `users` DISABLE KEYS */;
-INSERT INTO `users` VALUES ('ana','$2a$10$xEyUW9wNFDWcjdvo4orYgeWYWIEUTR0KweCM7jXbfytEDwsuMXyTK',1,15,'ana@gmail.com',0,0,'Ana Maria Braga'),('armando','$2a$10$G21Awy3udH2acuuY3IqTPeJRT5QnuUGCVMydgLLZbjLMjFVJa9O12',1,1,'armando@ufpi.edu.br',0,0,'Armando Soares Sousa'),('brenda','$2a$10$XGgI46HrmD8X4Du.vi2oKeh/8ZFDdrLuK8g9gBjReyfight3RoIBK',1,21,'brenda@gmail.com',0,0,NULL),('capitu','$2a$10$oEaZHj67GPXkR/khMmdgjeMITD7L8dz80IDPtjzKK6kwT2rt2cbGW',1,16,'capitu@gmail.com',0,0,'Maria Capitulina de Amaral'),('carlos','$2a$10$ZxkTB./ZdO92fVoGRkwY4OUEk6uxUTnfB/iRSg1iqzBemMARGVpnu',1,8,'carlos@gmail.com',0,0,'Carlos Nascimento Sampaio'),('david','$2a$10$3gLNDikivHcF0.HcffucOusIgURSRzeTjAkKaUXGHFjIjOItXF1uO',1,12,'dcf@gm.com',0,0,'David Coper Field'),('foca','$2a$10$/.Yfv.iLdBcFg5EiecWgY.gsedEHyM/pyB.KwDkyc8KYNgtucxGcS',1,17,'foca@gmail.cofm',0,0,'Foca da Silva Maramelo'),('Francisco','$2a$10$vKnTJGs54wwOlDXB6QsAxOO3RxK.OSSq8uJLZKjxJ7kd7lg.jhVG2',1,3,'francisco@uol.com.br',0,0,'Francisco da Silva Sauro'),('joao','$2a$10$hRJ0e4Ix3O4GKvryi3h3.urzxFwvOvuxlsbLKKJKPCrx8VJfqeNSO',1,4,'joao@gmail.com',0,0,NULL),('jose','$2a$10$eDKIyxHjiQfQqrjKO9MWnu8spMCmanXWneP72ypm0ShnmxasLfNgO',1,14,'jn@gma.com',0,0,'Jose do Nascimento'),('josesilva','$2a$10$4rvNGVW4ExPT/NEO//U2BeI4UWRKnsUwN0E5MeQR5qXPBCnl54Y3a',1,18,'jose@gmail.com',0,0,'Jose da Silva'),('jota','$2a$10$JNwqetWQWIINWs6QWr0bm.Qe/XTIUNeK2pvYVZdiOc18cAZFzBVv2',1,11,'jotaq@gm.com',0,0,'jota quest'),('lucia','$2a$10$rXgktQhChzxnxelJWGQBEeyczBKGZxGvt7n3ITFuTZQCFDW2U2LVS',1,10,'lbm@gmail.com',0,0,'Lucia Braga de Melo'),('maria','$2a$10$cfYZ4rJn1cl4P2XlYkgZxe7aUa1GHj4ku6Vexi.bxdnxxfldx/7LS',1,2,'maria@gmail.com',-3.7447981,-38.5749708,'Maria Joaquina de Amaral Pereira Goes'),('tes','$2a$10$TdQU8ETpFfYdEUDKxx/TmOkbSwPXGwVP2kon1e74b8ieqCy3qjbDW',1,13,'tersaliaamaral@gmail.com',0,0,'Tersalia do Amaral'),('teste','$2a$10$WaOoIQWkbMkfAGHy0KRHdu/KGwcGKLzf0Hg5gWmw0bNimFIUf.R.e',1,22,'teste@gmail.com',0,0,'Teste da Silva'),('tica','$2a$10$1A7DQ.MoAnGmt9wNhb/o7.BWdMPVlpiGw6Y4/kPPfNDo1F8IjCi26',1,20,'tica@gmail.com',0,0,'Tica da Silva'),('vera','$2a$10$U3BspMHOLefjDFzGmyIYo.Woti72slfkPxEsm57V/HxmHDfTbGpsi',1,9,'vera@gmail.com',0,0,'vera');
+INSERT INTO `users` VALUES ('ana','$2a$10$xEyUW9wNFDWcjdvo4orYgeWYWIEUTR0KweCM7jXbfytEDwsuMXyTK',1,15,'ana@gmail.com',0,0,'Ana Maria Braga','Ana Maria Braga'),('armando','$2a$10$G21Awy3udH2acuuY3IqTPeJRT5QnuUGCVMydgLLZbjLMjFVJa9O12',1,1,'armando@ufpi.edu.br',0,0,'Armando Soares Sousa','Armando Soares Sousa'),('brenda','$2a$10$XGgI46HrmD8X4Du.vi2oKeh/8ZFDdrLuK8g9gBjReyfight3RoIBK',1,21,'brenda@gmail.com',0,0,NULL,NULL),('capitu','$2a$10$oEaZHj67GPXkR/khMmdgjeMITD7L8dz80IDPtjzKK6kwT2rt2cbGW',1,16,'capitu@gmail.com',0,0,'Maria Capitulina de Amaral','Maria Capitulina de Amaral'),('carlos','$2a$10$ZxkTB./ZdO92fVoGRkwY4OUEk6uxUTnfB/iRSg1iqzBemMARGVpnu',1,8,'carlos@gmail.com',0,0,'Carlos Nascimento Sampaio','Carlos Nascimento Sampaio'),('david','$2a$10$3gLNDikivHcF0.HcffucOusIgURSRzeTjAkKaUXGHFjIjOItXF1uO',1,12,'dcf@gm.com',0,0,'David Coper Field','David Coper Field'),('foca','$2a$10$/.Yfv.iLdBcFg5EiecWgY.gsedEHyM/pyB.KwDkyc8KYNgtucxGcS',1,17,'foca@gmail.cofm',0,0,'Foca da Silva Maramelo','Foca da Silva Maramelo'),('Francisco','$2a$10$vKnTJGs54wwOlDXB6QsAxOO3RxK.OSSq8uJLZKjxJ7kd7lg.jhVG2',1,3,'francisco@uol.com.br',0,0,'Francisco da Silva Sauro','Francisco da Silva Sauro'),('joao','$2a$10$hRJ0e4Ix3O4GKvryi3h3.urzxFwvOvuxlsbLKKJKPCrx8VJfqeNSO',1,4,'joao@gmail.com',0,0,NULL,NULL),('jose','$2a$10$eDKIyxHjiQfQqrjKO9MWnu8spMCmanXWneP72ypm0ShnmxasLfNgO',1,14,'jn@gma.com',0,0,'Jose do Nascimento','Jose do Nascimento'),('josesilva','$2a$10$4rvNGVW4ExPT/NEO//U2BeI4UWRKnsUwN0E5MeQR5qXPBCnl54Y3a',1,18,'jose@gmail.com',0,0,'Jose da Silva','Jose da Silva'),('jota','$2a$10$JNwqetWQWIINWs6QWr0bm.Qe/XTIUNeK2pvYVZdiOc18cAZFzBVv2',1,11,'jotaq@gm.com',0,0,'jota quest','jota quest'),('lucia','$2a$10$rXgktQhChzxnxelJWGQBEeyczBKGZxGvt7n3ITFuTZQCFDW2U2LVS',1,10,'lbm@gmail.com',0,0,'Lucia Braga de Melo','Lucia Braga de Melo'),('maria','$2a$10$cfYZ4rJn1cl4P2XlYkgZxe7aUa1GHj4ku6Vexi.bxdnxxfldx/7LS',1,2,'maria@gmail.com',-3.7447981,-38.5749708,'Maria Joaquina de Amaral Pereira Goes','Maria Joaquina de Amaral Pereira Goes'),('tes','$2a$10$TdQU8ETpFfYdEUDKxx/TmOkbSwPXGwVP2kon1e74b8ieqCy3qjbDW',1,13,'tersaliaamaral@gmail.com',0,0,'Tersalia do Amaral','Tersalia do Amaral'),('teste','$2a$10$WaOoIQWkbMkfAGHy0KRHdu/KGwcGKLzf0Hg5gWmw0bNimFIUf.R.e',1,22,'teste@gmail.com',0,0,'Teste da Silva','Teste da Silva'),('teste2','$2a$10$EzqxvWsCzU6ycTx5E068RuoS877vpDSBRENG0/E/I9e6QE4RfuoFa',1,23,'teste2@gmail.com',0,0,'Novo Teste para o Banco dbsysweb','Novo Teste para o Banco dbsysweb'),('teste3','$2a$10$wBnidZd54z6T5gxo3SaPkud845kAZjZr6mTCd8GxnKb7yj9e4Rrji',1,24,'teste3@gmail.com',0,0,'Teste3 da Silva','Teste3 da Silva'),('tica','$2a$10$1A7DQ.MoAnGmt9wNhb/o7.BWdMPVlpiGw6Y4/kPPfNDo1F8IjCi26',1,20,'tica@gmail.com',0,0,'Tica da Silva','Tica da Silva'),('vera','$2a$10$U3BspMHOLefjDFzGmyIYo.Woti72slfkPxEsm57V/HxmHDfTbGpsi',1,9,'vera@gmail.com',0,0,'vera','vera');
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -237,8 +262,35 @@ CREATE TABLE `users_id_friends_list` (
 
 LOCK TABLES `users_id_friends_list` WRITE;
 /*!40000 ALTER TABLE `users_id_friends_list` DISABLE KEYS */;
-INSERT INTO `users_id_friends_list` VALUES (3,1),(14,1),(9,1),(8,1),(16,1),(16,20),(2,1),(2,20),(20,16),(20,2),(22,1),(1,2),(1,3),(1,16),(1,14),(1,9),(1,8),(1,22);
+INSERT INTO `users_id_friends_list` VALUES (14,1),(8,1),(16,1),(16,20),(20,16),(20,2),(22,1),(3,1),(3,2),(2,1),(2,20),(2,3),(2,9),(9,1),(9,2),(23,1),(1,2),(1,3),(1,16),(1,14),(1,9),(1,8),(1,22),(1,23);
 /*!40000 ALTER TABLE `users_id_friends_list` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `users_roles`
+--
+
+DROP TABLE IF EXISTS `users_roles`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `users_roles` (
+  `users_id` bigint(20) NOT NULL,
+  `roles_id` bigint(20) NOT NULL,
+  UNIQUE KEY `UK_60loxav507l5mreo05v0im1lq` (`roles_id`),
+  KEY `FKml90kef4w2jy7oxyqv742tsfc` (`users_id`),
+  CONSTRAINT `FK15d410tj6juko0sq9k4km60xq` FOREIGN KEY (`roles_id`) REFERENCES `role` (`id`),
+  CONSTRAINT `FKml90kef4w2jy7oxyqv742tsfc` FOREIGN KEY (`users_id`) REFERENCES `users` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `users_roles`
+--
+
+LOCK TABLES `users_roles` WRITE;
+/*!40000 ALTER TABLE `users_roles` DISABLE KEYS */;
+INSERT INTO `users_roles` VALUES (1,1);
+/*!40000 ALTER TABLE `users_roles` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
@@ -250,4 +302,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2019-02-26 12:00:41
+-- Dump completed on 2019-03-09 12:17:14

@@ -20,6 +20,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.JdbcUserDetailsManager;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
+import br.ufc.great.sysadmin.service.UsersService;
+
+
 /**
  * Classe de configuração do Spring Security
  * @author armandosoaressousa
@@ -31,6 +34,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired
     private DataSource datasource;
+    
+    @Autowired
+	private UsersService userService;
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
@@ -79,29 +85,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired
     public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
-        //Use Spring Boots User detailsMAnager
-        JdbcUserDetailsManager userDetailsService = new JdbcUserDetailsManager();
-
-        //Set our Datasource to use the one defined in application.properties
-        userDetailsService.setDataSource(datasource);
-
-        //Create BCryptPassword encoder
-        PasswordEncoder encoder = new BCryptPasswordEncoder();
-
-        //add components
-        auth.userDetailsService(userDetailsService).passwordEncoder(encoder);
-        auth.jdbcAuthentication().dataSource(datasource);
-       
-        // add new user "user" with password "password" - password will be encrypted
-        if(!userDetailsService.userExists("armando")) {
-            List<GrantedAuthority> authorities = new ArrayList<GrantedAuthority>();
-            authorities.add(new SimpleGrantedAuthority("ADMIN"));
-            authorities.add(new SimpleGrantedAuthority("USER"));
-            authorities.add(new SimpleGrantedAuthority("STOREOWNER"));
-            User userDetails = new User("armando", encoder.encode("armando"), authorities);
-            userDetailsService.createUser(userDetails);
-        }
-        
+    	auth.userDetailsService(this.userService)
+    	.passwordEncoder(new BCryptPasswordEncoder());
     }
-
 }

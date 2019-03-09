@@ -26,14 +26,12 @@
         <div class="box-body no-padding">
             <table class="table table-striped">
                 <tr>                    
-                    <th>Usuário</th>
                     <th>Acesso</th>
                     <th>Ações</th>
                 </tr>
                 <tr th:each="row : ${list}">
                 	<input id="id" name="id" th:value="${row.id}" type="hidden" />
-                    <td th:text="${row.username}"></td>
-                    <td th:text="${row.authority}"></td>
+                    <td th:text="${row.nome}"></td>
                     <td>
                         <a th:href="${'/accesscontrol/edit/' + row.id}">editar</a>                 
                     </td>

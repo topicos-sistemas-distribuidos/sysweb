@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import br.ufc.great.sysadmin.model.Authorities;
+import br.ufc.great.sysadmin.model.Role;
 import br.ufc.great.sysadmin.model.Users;
 import br.ufc.great.sysadmin.service.AuthoritiesService;
 import br.ufc.great.sysadmin.service.MyStoresService;
@@ -378,7 +378,7 @@ public class UserController {
     	model.addAttribute("loginuserid", loginUser.getId());
     	model.addAttribute("idUser", editUser.getId());
     	model.addAttribute("username", editUser.getUsername());
-    	model.addAttribute("completename", editUser.getCompletename());
+    	model.addAttribute("completename", editUser.getName());
     	
         return "users/formImage";
 
@@ -398,6 +398,7 @@ public class UserController {
 		return "/register";
 	}
 
+	//TODO Revisar a forma de registra das permissões do usuário
 	@RequestMapping(value = "/register", method = RequestMethod.POST)
 	public String processRegistrationForm(Model model, Users user, @RequestParam("password") String password, 
     		@RequestParam("confirmpassword") String confirmPassword, @RequestParam("authority") String authority, 
@@ -418,21 +419,20 @@ public class UserController {
 				user.setEnabled(true);
 				this.userService.save(user);
 				
-				Authorities authorities = new Authorities();
-				authorities.setUsername(username);	
+				Role authorities = new Role();	
 				
-				//checa o tipo do usuárioa
+				//checa o tipo do usuário
 				if (authority.equals("USER")) {				
-					authorities.setAuthority("USER");
-					Authorities save = authoritiesService.save(authorities);
+					authorities.setNome("USER");
+					Role save = authoritiesService.save(authorities);
 					model.addAttribute("msg", "Usuário registrado com sucesso!");
 					return "/login";				
 				}
 				
 				//checa o tipo do usuário
 				if (authority.equals("LOJISTA")) {			
-					authorities.setAuthority("LOJISTA");
-					Authorities save = authoritiesService.save(authorities);
+					authorities.setNome("LOJISTA");
+					Role save = authoritiesService.save(authorities);
 					model.addAttribute("msg", "Usuário lojista registrado com sucesso!");
 					return "/login";				
 				}	        	

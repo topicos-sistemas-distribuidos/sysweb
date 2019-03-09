@@ -13,5 +13,5 @@ import br.ufc.great.sysadmin.model.Users;
 @Repository
 public interface IUsersRepository extends JpaRepository<Users, Long>{
 	Users findByUsername(String username);
-
+	Users findByEmail(String email);
 }

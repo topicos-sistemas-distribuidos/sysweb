@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import br.ufc.great.sysadmin.model.Authorities;
+import br.ufc.great.sysadmin.model.Role;
 import br.ufc.great.sysadmin.model.Users;
 import br.ufc.great.sysadmin.service.AuthoritiesService;
 import br.ufc.great.sysadmin.service.UsersService;
@@ -52,7 +52,7 @@ public class AccessControlController {
 	 */
     @RequestMapping(value="/accesscontrol", method = RequestMethod.GET)
     public String index(Model model) {
-    	List<Authorities> authoritiesList = this.authoritiesService.getListAll();
+    	List<Role> authoritiesList = this.authoritiesService.getListAll();
     	
     	checkUser();
     	model.addAttribute("list", authoritiesList);
@@ -71,7 +71,7 @@ public class AccessControlController {
     @RequestMapping("/accesscontrol/add")
     public String add(Model model) {
 
-        model.addAttribute("access", new Authorities());
+        model.addAttribute("access", new Role());
         
     	model.addAttribute("loginusername", loginUser.getUsername());
     	model.addAttribute("loginemailuser", loginUser.getEmail());
@@ -108,10 +108,10 @@ public class AccessControlController {
      * @return
      */
     @RequestMapping(value = "/accesscontrol/save", method = RequestMethod.POST)
-    public String save(Authorities authorities , @RequestParam("authority") String authority, final RedirectAttributes ra) {   	    	
-    	authorities.setAuthority(authority);
-    	Authorities save = authoritiesService.save(authorities);
-    	ra.addFlashAttribute("successFlash", "Usuário foi salvo com sucesso.");
+    public String save(Role authorities , @RequestParam("authority") String authority, final RedirectAttributes ra) {   	    	
+    	authorities.setNome(authority);
+    	Role save = authoritiesService.save(authorities);
+    	ra.addFlashAttribute("successFlash", "Permissão salva com sucesso.");
 
     	return "redirect:/accesscontrol";	
     	
