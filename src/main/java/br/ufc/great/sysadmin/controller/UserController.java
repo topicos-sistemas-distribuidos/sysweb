@@ -6,8 +6,6 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -17,12 +15,13 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import br.ufc.great.sysadmin.model.Authorities;
+import br.ufc.great.sysadmin.model.Role;
 import br.ufc.great.sysadmin.model.Users;
 import br.ufc.great.sysadmin.service.AuthoritiesService;
 import br.ufc.great.sysadmin.service.MyStoresService;
 import br.ufc.great.sysadmin.service.UsersService;
 import br.ufc.great.sysadmin.util.GeradorSenha;
+import br.ufc.great.sysadmin.util.MySessionInfo;
 
 /**
  * Faz o controle do domínio de usuários
@@ -38,6 +37,9 @@ public class UserController {
 	private MyStoresService myStoresService;
 	
 	@Autowired
+	private MySessionInfo mySessionInfo;
+	
+	@Autowired
 	public void setUserService(UsersService userServices){
 		this.userService = userServices;
 	}
@@ -51,10 +53,9 @@ public class UserController {
 	public void setMyStoresService(MyStoresService myStoresService) {
 		this.myStoresService = myStoresService;
 	}
-
+	
 	private void checkUser() {
-		User userDetails = (User)SecurityContextHolder.getContext().getAuthentication().getPrincipal();		
-    	this.loginUser = userService.getUserByUserName(userDetails.getUsername());
+		loginUser = mySessionInfo.getCurrentUser();
 	}
 	
 	/**
@@ -64,8 +65,8 @@ public class UserController {
 	 */
 	@RequestMapping(value = "/users")
 	public String index(Model model){
-		checkUser();    	
     	List<Users> list = userService.getAll();
+    	checkUser();
     	
     	model.addAttribute("loginusername", loginUser.getUsername());
     	model.addAttribute("loginemailuser", loginUser.getEmail());
@@ -84,9 +85,9 @@ public class UserController {
 	 */
     @RequestMapping(value = "/users/{pageNumber}", method = RequestMethod.GET)
     public String list(@PathVariable Integer pageNumber, Model model) {
-    	checkUser();
     	Page<Users> page = this.userService.getList(pageNumber);
-		   
+    	checkUser();
+    	
         int current = page.getNumber() + 1;
         int begin = Math.max(1, current - 5);
         int end = Math.min(begin + 10, page.getTotalPages());
@@ -109,7 +110,7 @@ public class UserController {
      */
     @RequestMapping("/users/add")
     public String add(Model model) {
-		checkUser();    	
+    	checkUser();
     	
         model.addAttribute("user", new Users());
         model.addAttribute("loginusername", loginUser.getUsername());
@@ -128,9 +129,8 @@ public class UserController {
      */
     @RequestMapping("/users/edit/{id}")
     public String edit(@PathVariable Long id, Model model) {
-		checkUser();    	
-    	
 		Users editUser = userService.get(id);
+		checkUser();
 		
         model.addAttribute("user", editUser);
         model.addAttribute("loginusername", loginUser.getUsername());
@@ -150,8 +150,7 @@ public class UserController {
      */
     @RequestMapping("/users/edit/profile/{id}")
     public String editProfile(@PathVariable Long id, Model model) {
-		checkUser();    	
-    	
+    	checkUser();
 		Users user = this.userService.get(loginUser.getId());
 		List<Users> idFriends = user.getIdFriendsList();		
 		List<Users> listaAmigos = new LinkedList<Users>();
@@ -211,8 +210,6 @@ public class UserController {
     		@RequestParam("newpassword") String newPassword, @RequestParam("confirmnewpassword") String confirmNewPassword, 
     		final RedirectAttributes ra) {
     	
-    	checkUser();
-    	
     	String recuperaPasswordBanco;
     	Users userOriginal = userService.get(user.getId());
     	
@@ -254,8 +251,8 @@ public class UserController {
      */
     @RequestMapping(value = "/users/list", method = RequestMethod.GET)
     public String listAllUsers(Model model) {
-    	checkUser();   	
     	List<Users> users =  this.userService.getAll();
+    	checkUser();
     	
         model.addAttribute("list", users);
         model.addAttribute("loginusername", loginUser.getUsername());
@@ -275,7 +272,6 @@ public class UserController {
      */
     @RequestMapping(value = "/users/{idUser}/add/friend/{idFriend}")
     public String addFriend(@PathVariable long idUser, @PathVariable long idFriend, Model model, final RedirectAttributes ra) {
-    	checkUser();
     	String mensagem="";    	        	
     	Users user = this.userService.get(idUser);
     	Users friend = this.userService.get(idFriend);
@@ -302,8 +298,7 @@ public class UserController {
      */
     @RequestMapping(value = "/users/{idUser}/list/friends", method = RequestMethod.GET)
     public String listFriends(@PathVariable long idUser, Model model) {    
-		checkUser();    	
-
+    	checkUser();
 		Users user = this.userService.get(idUser);
 		List<Users> idFriends = user.getIdFriendsList();
 		
@@ -332,7 +327,6 @@ public class UserController {
      */
     @RequestMapping(value = "/users/{idUser}/delete/friend/{idFriend}")
     public String deleteFriend(@PathVariable long idUser, @PathVariable long idFriend, Model model, final RedirectAttributes ra) {
-    	checkUser();
     	String mensagem = "";
     	        	
     	Users user = this.userService.get(idUser);
@@ -368,9 +362,8 @@ public class UserController {
  
 	@RequestMapping(value = "/users/{idUser}/select/image")
 	public String selectImage(@PathVariable(value = "idUser") Long idUser, Model model){
-		checkUser();    	
-
 		Users editUser = userService.get(idUser);
+		checkUser();
 		
         model.addAttribute("user", editUser);
         model.addAttribute("loginusername", loginUser.getUsername());
@@ -378,7 +371,7 @@ public class UserController {
     	model.addAttribute("loginuserid", loginUser.getId());
     	model.addAttribute("idUser", editUser.getId());
     	model.addAttribute("username", editUser.getUsername());
-    	model.addAttribute("completename", editUser.getCompletename());
+    	model.addAttribute("completename", editUser.getName());
     	
         return "users/formImage";
 
@@ -398,6 +391,7 @@ public class UserController {
 		return "/register";
 	}
 
+	//TODO Revisar a forma de registra das permissões do usuário
 	@RequestMapping(value = "/register", method = RequestMethod.POST)
 	public String processRegistrationForm(Model model, Users user, @RequestParam("password") String password, 
     		@RequestParam("confirmpassword") String confirmPassword, @RequestParam("authority") String authority, 
@@ -418,21 +412,20 @@ public class UserController {
 				user.setEnabled(true);
 				this.userService.save(user);
 				
-				Authorities authorities = new Authorities();
-				authorities.setUsername(username);	
+				Role authorities = new Role();	
 				
-				//checa o tipo do usuárioa
+				//checa o tipo do usuário
 				if (authority.equals("USER")) {				
-					authorities.setAuthority("USER");
-					Authorities save = authoritiesService.save(authorities);
+					authorities.setNome("USER");
+					Role save = authoritiesService.save(authorities);
 					model.addAttribute("msg", "Usuário registrado com sucesso!");
 					return "/login";				
 				}
 				
 				//checa o tipo do usuário
 				if (authority.equals("LOJISTA")) {			
-					authorities.setAuthority("LOJISTA");
-					Authorities save = authoritiesService.save(authorities);
+					authorities.setNome("LOJISTA");
+					Role save = authoritiesService.save(authorities);
 					model.addAttribute("msg", "Usuário lojista registrado com sucesso!");
 					return "/login";				
 				}	        	

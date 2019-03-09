@@ -5,8 +5,6 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -20,6 +18,7 @@ import br.ufc.great.sysadmin.model.Users;
 import br.ufc.great.sysadmin.service.MyStoresService;
 import br.ufc.great.sysadmin.service.StoresService;
 import br.ufc.great.sysadmin.service.UsersService;
+import br.ufc.great.sysadmin.util.MySessionInfo;
 
 @Controller
 public class StoreController {
@@ -29,6 +28,9 @@ public class StoreController {
 	private Users loginUser; 
 	private MyStoresService myStoresService;
     
+	@Autowired
+	private MySessionInfo mySessionInfo;
+	
     @Autowired
     public void setStoreService(StoresService storeService) {
         this.storeService = storeService;
@@ -45,8 +47,7 @@ public class StoreController {
 	}
 
 	private void checkUser() {
-		User userDetails = (User)SecurityContextHolder.getContext().getAuthentication().getPrincipal();  
-    	this.loginUser = userService.getUserByUserName(userDetails.getUsername());
+		loginUser = mySessionInfo.getCurrentUser();
 	}
     
 	/**
