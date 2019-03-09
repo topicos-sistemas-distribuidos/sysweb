@@ -38,7 +38,7 @@ public class Users extends AbstractModel<Long> implements UserDetails{
 	private double latitude=0;
 	private double longitude=0;
 	
-	@OneToMany(fetch = FetchType.EAGER)
+	@ManyToMany(fetch = FetchType.EAGER)
 	private List<Role> roles = new LinkedList<Role>();
 	
 	@LazyCollection(LazyCollectionOption.FALSE)

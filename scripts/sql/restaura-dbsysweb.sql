@@ -16,91 +16,6 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
--- Table structure for table `SPRING_SESSION`
---
-
-DROP TABLE IF EXISTS `SPRING_SESSION`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `SPRING_SESSION` (
-  `PRIMARY_ID` int(10) NOT NULL AUTO_INCREMENT,
-  `SESSION_ID` char(36) NOT NULL,
-  `CREATION_TIME` bigint(20) NOT NULL,
-  `LAST_ACCESS_TIME` bigint(20) NOT NULL,
-  `MAX_INACTIVE_INTERVAL` int(11) NOT NULL,
-  `EXPIRY_TIME` bigint(20) NOT NULL DEFAULT '6000',
-  `PRINCIPAL_NAME` varchar(100) DEFAULT NULL,
-  PRIMARY KEY (`PRIMARY_ID`),
-  UNIQUE KEY `SPRING_SESSION_IX1` (`SESSION_ID`),
-  KEY `SPRING_SESSION_IX2` (`EXPIRY_TIME`),
-  KEY `SPRING_SESSION_IX3` (`PRINCIPAL_NAME`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=latin1;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `SPRING_SESSION`
---
-
-LOCK TABLES `SPRING_SESSION` WRITE;
-/*!40000 ALTER TABLE `SPRING_SESSION` DISABLE KEYS */;
-INSERT INTO `SPRING_SESSION` VALUES (2,'dfec736a-e81c-47dc-800c-901a95ba9949',1546576849703,1546576994089,1800,6000,'armando');
-/*!40000 ALTER TABLE `SPRING_SESSION` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `SPRING_SESSION_ATTRIBUTES`
---
-
-DROP TABLE IF EXISTS `SPRING_SESSION_ATTRIBUTES`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `SPRING_SESSION_ATTRIBUTES` (
-  `SESSION_ID` char(36) NOT NULL,
-  `ATTRIBUTE_NAME` varchar(200) NOT NULL,
-  `ATTRIBUTE_BYTES` blob NOT NULL,
-  PRIMARY KEY (`SESSION_ID`,`ATTRIBUTE_NAME`),
-  CONSTRAINT `SPRING_SESSION_ATTRIBUTES_FK` FOREIGN KEY (`SESSION_ID`) REFERENCES `SPRING_SESSION` (`SESSION_ID`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `SPRING_SESSION_ATTRIBUTES`
---
-
-LOCK TABLES `SPRING_SESSION_ATTRIBUTES` WRITE;
-/*!40000 ALTER TABLE `SPRING_SESSION_ATTRIBUTES` DISABLE KEYS */;
-INSERT INTO `SPRING_SESSION_ATTRIBUTES` VALUES ('dfec736a-e81c-47dc-800c-901a95ba9949','SPRING_SECURITY_CONTEXT','¨\Ì\0sr\0=org.springframework.security.core.context.SecurityContextImpl\0\0\0\0\0\0§\0L\0authenticationt\02Lorg/springframework/security/core/Authentication;xpsr\0Oorg.springframework.security.authentication.UsernamePasswordAuthenticationToken\0\0\0\0\0\0§\0L\0credentialst\0Ljava/lang/Object;L\0	principalq\0~\0xr\0Gorg.springframework.security.authentication.AbstractAuthenticationToken”™(~nGd\0Z\0\rauthenticatedL\0authoritiest\0Ljava/util/Collection;L\0detailsq\0~\0xpsr\0&java.util.Collections$UnmodifiableList¸%1µ\Ïé\0L\0listt\0Ljava/util/List;xr\0,java.util.Collections$UnmodifiableCollectionB\0Ä\À^˜\0L\0cq\0~\0xpsr\0java.util.ArrayListxÅ\“ô\«aù\0I\0sizexp\0\0\0w\0\0\0sr\0Borg.springframework.security.core.authority.SimpleGrantedAuthority\0\0\0\0\0\0§\0L\0rolet\0Ljava/lang/String;xpt\0ADMINsq\0~\0t\0\nSTOREOWNERsq\0~\0t\0USERxq\0~\0\rsr\0Horg.springframework.security.web.authentication.WebAuthenticationDetails\0\0\0\0\0\0§\0L\0\rremoteAddressq\0~\0L\0	sessionIdq\0~\0xpt\00:0:0:0:0:0:0:1t\0$ad9a23a9-8eba-42b1-b270-bb749d9dd77bpsr\02org.springframework.security.core.userdetails.User\0\0\0\0\0\0§\0Z\0accountNonExpiredZ\0accountNonLockedZ\0credentialsNonExpiredZ\0enabledL\0authoritiest\0Ljava/util/Set;L\0passwordq\0~\0L\0usernameq\0~\0xpsr\0%java.util.Collections$UnmodifiableSetÄí—èõÄU\0\0xq\0~\0\nsr\0java.util.TreeSet›òPìï\Ìá[\0\0xpsr\0Forg.springframework.security.core.userdetails.User$AuthorityComparator\0\0\0\0\0\0§\0\0xpw\0\0\0q\0~\0q\0~\0q\0~\0xpt\0armando'),('dfec736a-e81c-47dc-800c-901a95ba9949','SPRING_SECURITY_SAVED_REQUEST','¨\Ì\0sr\0Aorg.springframework.security.web.savedrequest.DefaultSavedRequestX˛†)&uèn\0I\0\nserverPortL\0contextPatht\0Ljava/lang/String;L\0cookiest\0Ljava/util/ArrayList;L\0headerst\0Ljava/util/Map;L\0localesq\0~\0L\0methodq\0~\0L\0\nparametersq\0~\0L\0pathInfoq\0~\0L\0queryStringq\0~\0L\0\nrequestURIq\0~\0L\0\nrequestURLq\0~\0L\0schemeq\0~\0L\0\nserverNameq\0~\0L\0servletPathq\0~\0xp\0\0êt\0\0sr\0java.util.ArrayListxÅ\“ô\«aù\0I\0sizexp\0\0\0w\0\0\0sr\09org.springframework.security.web.savedrequest.SavedCookie@+Çü¿¥f\0I\0maxAgeZ\0secureI\0versionL\0commentq\0~\0L\0domainq\0~\0L\0nameq\0~\0L\0pathq\0~\0L\0valueq\0~\0xpˇˇˇˇ\0\0\0\0\0ppt\0\nJSESSIONIDpt\0 EEA2C12849F6B9F3AEC426FF2112B3A0xsr\0java.util.TreeMap¡ˆ>-%j\Ê\0L\0\ncomparatort\0Ljava/util/Comparator;xpsr\0*java.lang.String$CaseInsensitiveComparatorw\\}\\P\Â\Œ\0\0xpw\0\0\0	t\0acceptsq\0~\0\0\0\0w\0\0\0t\0?text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8xt\0accept-encodingsq\0~\0\0\0\0w\0\0\0t\0\rgzip, deflatext\0accept-languagesq\0~\0\0\0\0w\0\0\0t\0pt-brxt\0\nconnectionsq\0~\0\0\0\0w\0\0\0t\0\nkeep-alivext\0cookiesq\0~\0\0\0\0w\0\0\0t\0+JSESSIONID=EEA2C12849F6B9F3AEC426FF2112B3A0xt\0dntsq\0~\0\0\0\0w\0\0\0t\01xt\0hostsq\0~\0\0\0\0w\0\0\0t\0localhost:8080xt\0upgrade-insecure-requestssq\0~\0\0\0\0w\0\0\0t\01xt\0\nuser-agentsq\0~\0\0\0\0w\0\0\0t\0wMozilla/5.0 (Macintosh; Intel Mac OS X 10_14_2) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/12.0.2 Safari/605.1.15xxsq\0~\0\0\0\0w\0\0\0sr\0java.util.Locale~¯`ú0˘\Ï\0I\0hashcodeL\0countryq\0~\0L\0\nextensionsq\0~\0L\0languageq\0~\0L\0scriptq\0~\0L\0variantq\0~\0xpˇˇˇˇt\0BRt\0\0t\0ptq\0~\00q\0~\00xxt\0GETsq\0~\0pw\0\0\0\0xppt\0/t\0http://localhost:8080/t\0httpt\0	localhostt\0/');
-/*!40000 ALTER TABLE `SPRING_SESSION_ATTRIBUTES` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `authorities`
---
-
-DROP TABLE IF EXISTS `authorities`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `authorities` (
-  `username` varchar(50) NOT NULL,
-  `authority` varchar(50) NOT NULL,
-  `id` bigint(20) NOT NULL AUTO_INCREMENT,
-  UNIQUE KEY `authorities_idx_1` (`username`,`authority`),
-  KEY `id` (`id`),
-  CONSTRAINT `authorities_ibfk_1` FOREIGN KEY (`username`) REFERENCES `users` (`username`)
-) ENGINE=InnoDB AUTO_INCREMENT=26 DEFAULT CHARSET=latin1;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `authorities`
---
-
-LOCK TABLES `authorities` WRITE;
-/*!40000 ALTER TABLE `authorities` DISABLE KEYS */;
-INSERT INTO `authorities` VALUES ('armando','USER',1),('maria','USER',2),('francisco','USER',3),('carlos','USER',7),('vera','USER',8),('lucia','USER',9),('jota','USER',10),('david','USER',11),('tes','USER',12),('jose','USER',13),('ana','USER',14),('armando','ADMIN',15),('armando','STOREOWNER',16),('maria','STOREOWNER',17),('capitu','USER',18),('foca','USER',19),('foca','STOREOWNER',20),('josesilva','USER',21),('tica','USER',22),('teste','USER',23),('teste2','USER',24),('teste3','USER',25);
-/*!40000 ALTER TABLE `authorities` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
 -- Table structure for table `my_stores`
 --
 
@@ -149,7 +64,7 @@ CREATE TABLE `my_stores_store_list` (
 
 LOCK TABLES `my_stores_store_list` WRITE;
 /*!40000 ALTER TABLE `my_stores_store_list` DISABLE KEYS */;
-INSERT INTO `my_stores_store_list` VALUES (1,12),(1,13),(2,14);
+INSERT INTO `my_stores_store_list` VALUES (1,12),(1,13),(1,21),(2,14);
 /*!40000 ALTER TABLE `my_stores_store_list` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -164,7 +79,7 @@ CREATE TABLE `role` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `nome` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -173,7 +88,7 @@ CREATE TABLE `role` (
 
 LOCK TABLES `role` WRITE;
 /*!40000 ALTER TABLE `role` DISABLE KEYS */;
-INSERT INTO `role` VALUES (1,'ROLE_ADMIN');
+INSERT INTO `role` VALUES (1,'ADMIN'),(2,'USER'),(3,'STOREOWNER');
 /*!40000 ALTER TABLE `role` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -194,7 +109,7 @@ CREATE TABLE `store` (
   `radius` double NOT NULL,
   `state` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=21 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=22 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -203,7 +118,7 @@ CREATE TABLE `store` (
 
 LOCK TABLES `store` WRITE;
 /*!40000 ALTER TABLE `store` DISABLE KEYS */;
-INSERT INTO `store` VALUES (3,'Rua Teste','Fortaleza',-3.7241736,-38.5042015,'Habibs Praia de Iracema',0,'Cear√°'),(4,'Rua Teste','Fortaleza',-3.7244947,-38.5028738,'Caf√© Vida',0,'Cear√°'),(5,'Rua Teste','Fortaleza',-3.7261007,-38.5022274,'Koni Street Japanese',0,'Cear√°'),(6,'Rua Teste','Fortaleza',-3.7255493,-38.499395,'Acaraj√© Cia',0,'Cear√°'),(7,'Rua Teste','Fortaleza',-3.7255493,-38.499395,'Barraca da Boa',0,'Cear√°'),(8,'Rua Teste','Fortaleza',-3.7267484,-38.4984938,'Didi Rei dos Mares',0,'Cear√°'),(9,'Rua Teste','Fortaleza',-3.7267484,-38.4995881,'Sabor de Mar',0,'Cear√°'),(10,'Rua Teste','Fortaleza',-3.7283864,-38.4974209,'Bistr√¥ Garrafeira',0,'Cear√°'),(11,'Rua Teste','Fortaleza',-3.7283864,-38.4974209,'Emp√≥rio Delitalia',0,'Cear√°'),(12,'Rua Teste','Fortaleza',0,0,'Loja da Maria editada',0,'Cear√°'),(13,'teste','Teresina',0,0,'Moda Maria',0,'Piau√≠'),(14,'Avenida Jati√∫ca','Macei√≥',0,0,'Foca Bear',0,'Alagoas'),(15,'Campus do Pici','Fortaleza',-3.7465646,-38.5780218,'Great',1,'Cear√°'),(16,'Campus do Pici','Fortaleza',-3.7464669,-38.5779165,'Cantina da Qu√≠mica',1,'Cear√°'),(17,'Campus do Pici','Fortaleza',-3.7457293,-38.5730363,'Lanchonete Alfa e √îmega',1,'Cear√°'),(18,'Campus do Pici','Fortaleza',-3.7420005,-38.5759716,'Cantina da Engenharia de Pesca',1,'Cear√°'),(19,'Campus do Pici','Fortaleza',-3.7392888,-38.5713145,'Dudes+Lanches',1,'Cear√°'),(20,'Campus do Pici','Fortaleza',-3.7447981,-38.5749708,'Restaurante Universit√°rio  da UFC',1,'Cear√°');
+INSERT INTO `store` VALUES (3,'Rua Teste','Fortaleza',-3.7241736,-38.5042015,'Habibs Praia de Iracema',0,'Cear√°'),(4,'Rua Teste','Fortaleza',-3.7244947,-38.5028738,'Caf√© Vida',0,'Cear√°'),(5,'Rua Teste','Fortaleza',-3.7261007,-38.5022274,'Koni Street Japanese',0,'Cear√°'),(6,'Rua Teste','Fortaleza',-3.7255493,-38.499395,'Acaraj√© Cia',0,'Cear√°'),(7,'Rua Teste','Fortaleza',-3.7255493,-38.499395,'Barraca da Boa',0,'Cear√°'),(8,'Rua Teste','Fortaleza',-3.7267484,-38.4984938,'Didi Rei dos Mares',0,'Cear√°'),(9,'Rua Teste','Fortaleza',-3.7267484,-38.4995881,'Sabor de Mar',0,'Cear√°'),(10,'Rua Teste','Fortaleza',-3.7283864,-38.4974209,'Bistr√¥ Garrafeira',0,'Cear√°'),(11,'Rua Teste','Fortaleza',-3.7283864,-38.4974209,'Emp√≥rio Delitalia',0,'Cear√°'),(12,'Rua Teste','Fortaleza',0,0,'Loja da Maria editada',0,'Cear√°'),(13,'teste2','Teresina',0,0,'Moda Maria',0,'Piau√≠'),(14,'Avenida Jati√∫ca','Macei√≥',0,0,'Foca Bear',0,'Alagoas'),(15,'Campus do Pici','Fortaleza',-3.7465646,-38.5780218,'Great',1,'Cear√°'),(16,'Campus do Pici','Fortaleza',-3.7464669,-38.5779165,'Cantina da Qu√≠mica',1,'Cear√°'),(17,'Campus do Pici','Fortaleza',-3.7457293,-38.5730363,'Lanchonete Alfa e √îmega',1,'Cear√°'),(18,'Campus do Pici','Fortaleza',-3.7420005,-38.5759716,'Cantina da Engenharia de Pesca',1,'Cear√°'),(19,'Campus do Pici','Fortaleza',-3.7392888,-38.5713145,'Dudes+Lanches',1,'Cear√°'),(20,'Campus do Pici','Fortaleza',-3.7447981,-38.5749708,'Restaurante Universit√°rio  da UFC',1,'Cear√°'),(21,'Rua Teste de novo','Teresina',0,0,'Teresina Moda Mais',0,'Piau√≠');
 /*!40000 ALTER TABLE `store` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -262,7 +177,7 @@ CREATE TABLE `users_id_friends_list` (
 
 LOCK TABLES `users_id_friends_list` WRITE;
 /*!40000 ALTER TABLE `users_id_friends_list` DISABLE KEYS */;
-INSERT INTO `users_id_friends_list` VALUES (14,1),(8,1),(16,1),(16,20),(20,16),(20,2),(22,1),(3,1),(3,2),(2,1),(2,20),(2,3),(2,9),(9,1),(9,2),(23,1),(1,2),(1,3),(1,16),(1,14),(1,9),(1,8),(1,22),(1,23);
+INSERT INTO `users_id_friends_list` VALUES (14,1),(16,1),(16,20),(20,16),(20,2),(22,1),(3,1),(3,2),(9,1),(9,2),(2,1),(2,20),(2,3),(2,9),(2,23),(23,1),(23,2),(1,2),(1,3),(1,16),(1,14),(1,9),(1,8),(1,22),(1,23),(1,17),(8,1),(8,17),(17,1),(17,8);
 /*!40000 ALTER TABLE `users_id_friends_list` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -276,7 +191,7 @@ DROP TABLE IF EXISTS `users_roles`;
 CREATE TABLE `users_roles` (
   `users_id` bigint(20) NOT NULL,
   `roles_id` bigint(20) NOT NULL,
-  UNIQUE KEY `UK_60loxav507l5mreo05v0im1lq` (`roles_id`),
+  KEY `FK15d410tj6juko0sq9k4km60xq` (`roles_id`),
   KEY `FKml90kef4w2jy7oxyqv742tsfc` (`users_id`),
   CONSTRAINT `FK15d410tj6juko0sq9k4km60xq` FOREIGN KEY (`roles_id`) REFERENCES `role` (`id`),
   CONSTRAINT `FKml90kef4w2jy7oxyqv742tsfc` FOREIGN KEY (`users_id`) REFERENCES `users` (`id`)
@@ -289,7 +204,7 @@ CREATE TABLE `users_roles` (
 
 LOCK TABLES `users_roles` WRITE;
 /*!40000 ALTER TABLE `users_roles` DISABLE KEYS */;
-INSERT INTO `users_roles` VALUES (1,1);
+INSERT INTO `users_roles` VALUES (1,1),(1,2),(1,3),(2,2),(2,3),(3,2),(4,2),(8,2),(9,2),(10,2),(11,2),(12,2),(13,2),(14,2),(15,2),(16,2),(17,2),(18,2),(20,2),(21,2),(22,2),(23,2),(24,2);
 /*!40000 ALTER TABLE `users_roles` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -302,4 +217,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2019-03-09 12:17:14
+-- Dump completed on 2019-03-09 18:12:40
