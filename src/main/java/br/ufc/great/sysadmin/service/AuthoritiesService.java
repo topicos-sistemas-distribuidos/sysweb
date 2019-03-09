@@ -27,4 +27,7 @@ public class AuthoritiesService extends AbstractService<Role, Long>{
 		return authoritiesRepository.findAll();
 	}
 
+	public Role getRoleByNome(String nome) {
+		return authoritiesRepository.findByNome(nome);
+	}
 }

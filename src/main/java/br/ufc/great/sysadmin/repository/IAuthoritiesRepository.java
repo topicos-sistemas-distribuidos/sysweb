@@ -7,5 +7,5 @@ import br.ufc.great.sysadmin.model.Role;
 
 @Repository
 public interface IAuthoritiesRepository extends JpaRepository<Role, Long>{
-
+	Role findByNome(String nome);
 }

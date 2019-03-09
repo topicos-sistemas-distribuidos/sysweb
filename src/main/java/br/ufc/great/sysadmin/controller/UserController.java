@@ -409,23 +409,27 @@ public class UserController {
 			  	String senhaCriptografada = new GeradorSenha().criptografa(password);
 
 			  	user.setPassword(senhaCriptografada);
-				user.setEnabled(true);
-				this.userService.save(user);
-				
+				user.setEnabled(true);				
 				Role authorities = new Role();	
 				
 				//checa o tipo do usuário
 				if (authority.equals("USER")) {				
-					authorities.setNome("USER");
-					Role save = authoritiesService.save(authorities);
-					model.addAttribute("msg", "Usuário registrado com sucesso!");
+					authorities = authoritiesService.getRoleByNome("USER");
+					List<Role> roles = new LinkedList<>();
+					roles.add(authorities);
+					user.setRoles(roles);
+					this.userService.save(user);
+					model.addAttribute("msg", "Usuário comum registrado com sucesso!");
 					return "/login";				
 				}
 				
 				//checa o tipo do usuário
 				if (authority.equals("LOJISTA")) {			
-					authorities.setNome("LOJISTA");
-					Role save = authoritiesService.save(authorities);
+					authorities = authoritiesService.getRoleByNome("STOREOWNER");
+					List<Role> roles = new LinkedList<>();
+					roles.add(authorities);
+					user.setRoles(roles);
+					this.userService.save(user);					
 					model.addAttribute("msg", "Usuário lojista registrado com sucesso!");
 					return "/login";				
 				}	        	
