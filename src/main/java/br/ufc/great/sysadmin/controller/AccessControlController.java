@@ -1,5 +1,6 @@
 package br.ufc.great.sysadmin.controller;
 
+import java.util.LinkedList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +16,7 @@ import br.ufc.great.sysadmin.model.Role;
 import br.ufc.great.sysadmin.model.Users;
 import br.ufc.great.sysadmin.service.AuthoritiesService;
 import br.ufc.great.sysadmin.service.UsersService;
+import br.ufc.great.sysadmin.util.GeradorSenha;
 import br.ufc.great.sysadmin.util.MySessionInfo;
 
 /**
@@ -47,9 +49,9 @@ public class AccessControlController {
 	}
 	
 	/**
-	 * Lista os usuários e suas permissões
+	 * Lista as permissões cadastradas
 	 * @param model
-	 * @return
+	 * @return página com a lista de permissões cadastradas
 	 */
     @RequestMapping(value="/accesscontrol", method = RequestMethod.GET)
     public String index(Model model) {
@@ -64,10 +66,102 @@ public class AccessControlController {
         return "accesscontrol/list";
     }
     
+	/**
+	 * Lista os usuários cadastrados no sistema
+	 * @param model
+	 * @return página contendo os usuários do sistema
+	 */
+	@RequestMapping(value = "/accesscontrol/users")
+	public String listUsers(Model model){
+    	List<Users> list = userService.getAll();
+    	checkUser();
+    	
+    	model.addAttribute("loginusername", loginUser.getUsername());
+    	model.addAttribute("loginemailuser", loginUser.getEmail());
+    	model.addAttribute("loginuserid", loginUser.getId());
+    	model.addAttribute("list", list);
+		
+		return "accesscontrol/users";
+	}
+
     /**
+     * Edita as permissões do usuário selecionado
+     * @param id
+     * @param model
+     * @return formulário dos dados do usuário com a edição de sua permissão no sistema
+     */
+    @RequestMapping("/accesscontrol/users/edit/{id}")
+    public String editUserAuthority(@PathVariable Long id, Model model) {
+		Users editUser = userService.get(id);
+		checkUser();
+		
+        model.addAttribute("user", editUser);
+        model.addAttribute("loginusername", loginUser.getUsername());
+    	model.addAttribute("loginemailuser", loginUser.getEmail());
+    	model.addAttribute("loginuserid", loginUser.getId());
+    	model.addAttribute("amountoffriends", editUser.getAmountOfFriends());
+    	
+        return "accesscontrol/formAuthority";
+    }
+    
+    /**
+     * Salva as alterações do usuário editado
+     * @param user novos dados do usuário
+     * @param nome permissao selecionada
+     * @param ra redireciona os atributos
+     * @return página que lista todos os usuários
+     */
+    @RequestMapping(value = "/accesscontrol/users/saveedited", method = RequestMethod.POST)
+    public String saveEdited(Users user, @RequestParam("nome") String authority, final RedirectAttributes ra) { 
+    	Users userEdited = this.userService.get(user.getId());
+    	List<Users> idFriends = userEdited.getIdFriendsList();    	
+    	List<Role> roles = new LinkedList<>();		
+		     	
+    	switch (checkAuthority(authority)) {
+		case "USER":
+			roles.add(authoritiesService.getRoleByNome("USER"));
+			userEdited.setRoles(roles);
+			break;
+		case "STOREOWNER":
+			roles.add(authoritiesService.getRoleByNome("STOREOWNER"));
+			roles.add(authoritiesService.getRoleByNome("USER"));
+			userEdited.setRoles(roles);
+			break;
+		default:
+			ra.addFlashAttribute("successFlash", "A permissão não está registrada no sistema!");
+			break;
+		}
+    	userEdited.setIdFriendsList(idFriends);
+		this.userService.save(userEdited);					
+        ra.addFlashAttribute("successFlash", "As permissões do Usuário " + userEdited.getUsername() + " foram alteradas com sucesso.");
+          				
+        return "redirect:/accesscontrol/users";
+    }
+
+    /**
+     * Verifica se a permissão foi registrada no sistema
+     * @param role permissão selecionada pelo usuário
+     * @return true se a permissão existe no sistema
+     */
+    private String checkAuthority(String role) {
+    	List<Role> roles = new LinkedList<>();
+    	roles = authoritiesService.getAll();
+    	String valor = null;
+    	
+    	for (Role elemento : roles) {
+    		if (elemento.getNome().equals(role)) {
+    			valor = elemento.getNome();
+    			break;
+    		}
+    	}
+    	
+		return valor;
+	}
+    
+	/**
      * Adiciona uma nova permissão a um usário existente
      * @param model
-     * @return
+     * @return formulário para preencher os dados da nova permissão
      */
     @RequestMapping("/accesscontrol/add")
     public String add(Model model) {
@@ -83,7 +177,24 @@ public class AccessControlController {
     }
 
     /**
-     * Edita as permissões de um usuário selecionado
+     * Salva a permissão selecionada
+     * @param authorities
+     * @param ra
+     * @return volta para a página de lista de permissões
+     */
+    @RequestMapping(value = "/accesscontrol/save", method = RequestMethod.POST)
+    public String save(Role authorities, final RedirectAttributes ra) {   	  
+    	
+    	Role save = authoritiesService.save(authorities);
+    	ra.addFlashAttribute("successFlash", "Permissão salva com sucesso.");
+
+    	return "redirect:/accesscontrol";	
+    	
+    }
+    
+    /**
+     * TODO: Revisar a operação de edicão de permissão
+     * Edita a permissão selecionada
      * @param id
      * @param model
      * @return
@@ -100,22 +211,6 @@ public class AccessControlController {
         return "accesscontrol/formEdit";
 
     }
-    
-    /**
-     * Salva as permissões do usuário selecionado
-     * @param authorities
-     * @param authority
-     * @param ra
-     * @return
-     */
-    @RequestMapping(value = "/accesscontrol/save", method = RequestMethod.POST)
-    public String save(Role authorities , @RequestParam("authority") String authority, final RedirectAttributes ra) {   	    	
-    	authorities.setNome(authority);
-    	Role save = authoritiesService.save(authorities);
-    	ra.addFlashAttribute("successFlash", "Permissão salva com sucesso.");
+ 
 
-    	return "redirect:/accesscontrol";	
-    	
-    }
-	
 }
