@@ -27,14 +27,10 @@
             <table class="table table-striped">
                 <tr>                    
                     <th>Acesso</th>
-                    <th>Ações</th>
                 </tr>
                 <tr th:each="row : ${list}">
                 	<input id="id" name="id" th:value="${row.id}" type="hidden" />
                     <td th:text="${row.nome}"></td>
-                    <td>
-                        <a th:href="${'/accesscontrol/edit/' + row.id}">editar</a>                 
-                    </td>
                 </tr>
             </table>
         </div>

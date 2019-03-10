@@ -1,14 +1,14 @@
 <!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring4-4.dtd">
 <html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorator="layout">
 <head>
-    <title>Cadastro de Usuário</title>
+    <title>Cadastro de Permissões</title>
 </head>
 <body>
 <section layout:fragment="header">
-    <h1>Cadastro de Permissão de Usuário</h1>
+    <h1>Cadastro de Permissão</h1>
     <ol class="breadcrumb">
         <li><a href="/"><i class="fa fa-dashboard"></i> Dashboard</a></li>
-        <li class="active">Cadastro de Permissão de Usuário</li>
+        <li class="active">Cadastro de Permissão</li>
     </ol>
 </section>
 <div layout:fragment="content">
@@ -29,6 +29,8 @@
 							<option value="ADMIN">ADMIN</option>
 							<option value="STOREOWNER">STOREOWNER</option>
 							<option value="USER">USER</option>
+							<option value="GUEST">GUEST</option>
+							<option value="REPORT">REPORT</option>
 						</select>
 					</div>            
             </div>
