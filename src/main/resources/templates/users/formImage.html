@@ -16,7 +16,7 @@
         <div class="box-header with-border">
             <h3 class="box-title">Formulário</h3>
             <div class="box-tools pull-right">
-                <a href="/users" type="button" class="btn btn-box-tool"><i class="fa fa-list-ul"></i></a>
+                <a th:href="${'/users/edit/profile/'+user.id}" type="button" class="btn btn-box-tool"><i class="fa fa-list-ul"></i></a>
             </div>
         </div>
         <form data-toggle="validator" role="form" th:object="${user}" th:action="${'/upload/selected/image/users/'+user.id}" method="post" enctype="multipart/form-data">

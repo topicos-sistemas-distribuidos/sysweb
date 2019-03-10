@@ -6,14 +6,13 @@ obs: Não pode remover loja por que ela está associada a um usuário
 
 solução: remover a loja do usuário em cascata
 
-2. Exibir a tela 500 erro interno do usuário
+2. Erro ao remover usuário
+Obs: É preciso revisar as entidades dependentes de usuário e removê-las em cascata.
 
-3. Fazer o controle de sessão do usuário
-
+3. Melhorar o controle de sessão do usuário
 Revisar sugestões em https://www.baeldung.com/spring-security-session
 
 4. Ao logar pela primeira vez mostra a tela 404 de invalidSession
-
 java.lang.NullPointerException: null
 	at br.ufc.great.sysadmin.util.MySessionInfo.getCurrentUser(MySessionInfo.java:33) ~[classes/:na]
 	
