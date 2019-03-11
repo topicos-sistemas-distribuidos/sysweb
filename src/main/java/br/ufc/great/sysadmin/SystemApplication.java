@@ -17,7 +17,7 @@ public class SystemApplication {
 	public static void main(String[] args) {
 		new Constantes();
 		String uploadsPath = Constantes.uploadDirectory;
-		
+		System.out.println("Diretório de controle de uploads: "+uploadsPath);
 		new File(uploadsPath).mkdir();
 		
 		SpringApplication.run(SystemApplication.class, args);

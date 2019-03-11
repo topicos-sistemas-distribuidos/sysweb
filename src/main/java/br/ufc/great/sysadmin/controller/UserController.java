@@ -30,7 +30,6 @@ import br.ufc.great.sysadmin.util.MySessionInfo;
  */
 @Controller
 public class UserController {
-
 	private UsersService userService;
 	private Users loginUser;
 	private AuthoritiesService authoritiesService;
@@ -54,14 +53,17 @@ public class UserController {
 		this.myStoresService = myStoresService;
 	}
 	
+	/*
+	 * Atualiza os dados da sessao do usuario logado
+	 */
 	private void checkUser() {
 		loginUser = mySessionInfo.getCurrentUser();
 	}
 	
 	/**
-	 * 
+	 * Lista todos os usuarios cadastrados
 	 * @param model
-	 * @return
+	 * @return pagina com todos os usuarios cadastrados
 	 */
 	@RequestMapping(value = "/users")
 	public String index(Model model){
@@ -78,10 +80,10 @@ public class UserController {
 	}
 	
 	/**
-	 * Faz a paginação da lista de usuários
+	 * Faz a paginação da lista de usuários cadastrado
 	 * @param pageNumber
 	 * @param model
-	 * @return
+	 * @return pagina contendo os usuarios paginados pelo pageNumber
 	 */
     @RequestMapping(value = "/users/{pageNumber}", method = RequestMethod.GET)
     public String list(@PathVariable Integer pageNumber, Model model) {
@@ -106,7 +108,7 @@ public class UserController {
     /**
      * Faz o cadastro de um novo usuário
      * @param model
-     * @return
+     * @return formulario para cadastrar novo usuario
      */
     @RequestMapping("/users/add")
     public String add(Model model) {
@@ -118,14 +120,13 @@ public class UserController {
     	model.addAttribute("loginuserid", loginUser.getId());
     	
         return "users/form";
-
     }
 
     /**
      * Edita um usuário selecionado
-     * @param id
+     * @param id do usuario
      * @param model
-     * @return
+     * @return formulario de edicao do usuario com checagem de password
      */
     @RequestMapping("/users/edit/{id}")
     public String edit(@PathVariable Long id, Model model) {
@@ -139,27 +140,21 @@ public class UserController {
     	model.addAttribute("amountoffriends", editUser.getAmountOfFriends());
     	
         return "users/formpwd";
-
     }
 
     /**
      * Edita profile do usuário logado
-     * @param id
+     * @param id do usuario logado
      * @param model
-     * @return
+     * @return formulario de edicao de profile do usuario
      */
     @RequestMapping("/users/edit/profile/{id}")
     public String editProfile(@PathVariable Long id, Model model) {
     	checkUser();
 		Users user = this.userService.get(loginUser.getId());
-		List<Users> idFriends = user.getIdFriendsList();		
-		List<Users> listaAmigos = new LinkedList<Users>();
-		
-		for (Users ids : idFriends) {
-			listaAmigos.add(this.userService.get(ids.getId()));
-		}
-        model.addAttribute("listfriends", listaAmigos);
-	
+		List<Users> friends = user.getFriendsList();		
+
+		model.addAttribute("listfriends", friends);
         model.addAttribute("user", loginUser);
         model.addAttribute("loginusername", loginUser.getUsername());
     	model.addAttribute("loginemailuser", loginUser.getEmail());
@@ -172,30 +167,47 @@ public class UserController {
     
     /**
      * Salva os dados de um usuário novo
-     * @param user
-     * @param password
-     * @param confirmPassword
+     * @param user usuario
+     * @param password senha
+     * @param confirmPassword confirma senha
+     * @param nome tipo de acesso ao sistema
      * @param ra
-     * @return
+     * @return pagina de usuarios com o novo usuario
      */
     @RequestMapping(value = "/users/save", method = RequestMethod.POST)
     public String save(Users user, @RequestParam("password") String password, 
-    		@RequestParam("confirmpassword") String confirmPassword, final RedirectAttributes ra) {
+    		@RequestParam("confirmpassword") String confirmPassword, 
+    		@RequestParam("nome") String authority, 
+    		final RedirectAttributes ra) {
     	String senhaCriptografada;
+    	List<Role> roles = new LinkedList<>();		
+    	
+    	switch (authoritiesService.checkAuthority(authority)) {
+		case "USER":
+			roles.add(authoritiesService.getRoleByNome("USER"));
+			user.setRoles(roles);
+			break;
+		case "STOREOWNER":
+			roles.add(authoritiesService.getRoleByNome("STOREOWNER"));
+			roles.add(authoritiesService.getRoleByNome("USER"));
+			user.setRoles(roles);
+			break;
+		default:
+			ra.addFlashAttribute("successFlash", "A permissão não está registrada no sistema!");
+			break;
+		}
     	
     	if (password.equals(confirmPassword)){
         	senhaCriptografada = new GeradorSenha().criptografa(password);
         	user.setPassword(senhaCriptografada);
             Users save = userService.save(user);
             ra.addFlashAttribute("successFlash", "Usuário foi salvo com sucesso.");
-            return "redirect:/users";	
     	}else{
             ra.addFlashAttribute("successFlash", "A senha do usuário NÃO confere.");
-            return "redirect:/users";	    		
     	}    	
-
+    	return "redirect:/users";
     }
-
+    
     /**
      * Salva as alterações do usuário editado
      * @param user novos dados do usuário
@@ -207,47 +219,68 @@ public class UserController {
      */
     @RequestMapping(value = "/users/saveedited", method = RequestMethod.POST)
     public String saveEdited(Users user, @RequestParam("password") String originalPassword, 
-    		@RequestParam("newpassword") String newPassword, @RequestParam("confirmnewpassword") String confirmNewPassword, 
+    		@RequestParam("newpassword") String newPassword, 
+    		@RequestParam("confirmnewpassword") String confirmNewPassword, 
     		final RedirectAttributes ra) {
     	
     	String recuperaPasswordBanco;
     	Users userOriginal = userService.get(user.getId());
-    	
     	recuperaPasswordBanco = userOriginal.getPassword();
+    	
+    	List<Users> friends = userOriginal.getFriendsList();    	
+    	List<Role> roles = userOriginal.getRoles();		
+		     	    	
+    	user.setFriendsList(friends);
+    	user.setRoles(roles);
     	
     	if (newPassword.equals(confirmNewPassword)){
         	if (new GeradorSenha().comparaSenhas(originalPassword, recuperaPasswordBanco)){
         		String novaSenhaCriptografada = new GeradorSenha().criptografa(newPassword);
         		user.setPassword(novaSenhaCriptografada);
                 Users save = userService.save(user);
-                ra.addFlashAttribute("successFlash", "Usuário " + user.getUsername() + " foi alterado com sucesso.");
-                return "redirect:/users";    		
+                ra.addFlashAttribute("successFlash", "Usuário " + user.getUsername() + " foi alterado com sucesso.");  		
         	}else{
         		ra.addFlashAttribute("successFlash", "A senha informada é diferente da senha original.");
-                return "redirect:/users";
         	}
     	}
     	else{
             ra.addFlashAttribute("successFlash", "A nova senha não foi confirmada.");
-            return "redirect:/users";
     	}
+    	return "redirect:/";
     }
     
     /**
+     * TODO: Checar as dependencias de usuario. Usuario tem lista de permissoes e usuario tem lista de amigos.
      * Remove um usuário selecionado
      * @param id
      * @return
      */
     @RequestMapping("/users/delete/{id}")
-    public String delete(@PathVariable Long id) {
-        userService.delete(id);
+    public String delete(@PathVariable Long id, Model model, final RedirectAttributes ra) {    
+    	String mensagem = "";    	
+    	String nome="";
+    	Users userToDelete = this.userService.get(id);
+    	
+    	nome = userToDelete.getName();
+    	//Lista de amigos a ser removida
+    	List<Users> friendsToDelete = userToDelete.getFriendsList();
+    	
+    	if (friendsToDelete.isEmpty()) {
+    		userToDelete.getRoles().clear();
+    		userService.delete(id);
+    		mensagem =  "Usuário " + nome + " removido com sucesso!";
+    	}else {
+    		mensagem = "O usuário não pode ser removido, pois ainda possui amigos associados!"; 
+    	}
+    	
+    	ra.addFlashAttribute("successFlash", mensagem);
         return "redirect:/users";
     }
     
     /**
      * Lista todos os usuários disponíveis
      * @param model
-     * @return
+     * @return pagina com todos os usuarios cadastrados
      */
     @RequestMapping(value = "/users/list", method = RequestMethod.GET)
     public String listAllUsers(Model model) {
@@ -268,7 +301,7 @@ public class UserController {
      * @param idFriend id do amigo
      * @param model
      * @param ra
-     * @return
+     * @return pagina com os amigos atualizados
      */
     @RequestMapping(value = "/users/{idUser}/add/friend/{idFriend}")
     public String addFriend(@PathVariable long idUser, @PathVariable long idFriend, Model model, final RedirectAttributes ra) {
@@ -276,9 +309,9 @@ public class UserController {
     	Users user = this.userService.get(idUser);
     	Users friend = this.userService.get(idFriend);
     	
-    	if (user.addIdFriend(friend)) {
+    	if (user.addFriend(friend)) {
     		this.userService.save(user);
-    		if (friend.addIdFriend(user)){
+    		if (friend.addFriend(user)){
     			this.userService.save(friend);	
     		}    		
     		mensagem = "O amigo foi salvo com sucesso.";
@@ -292,24 +325,17 @@ public class UserController {
 
     /**
      * Dado um usuário logado lista os amigos dele
-     * @param idUser
+     * @param idUser id do usuario
      * @param model
-     * @return
+     * @return pagina contendo todos os amigos do usuario
      */
     @RequestMapping(value = "/users/{idUser}/list/friends", method = RequestMethod.GET)
     public String listFriends(@PathVariable long idUser, Model model) {    
     	checkUser();
 		Users user = this.userService.get(idUser);
-		List<Users> idFriends = user.getIdFriendsList();
+		List<Users> friends = user.getFriendsList();
 		
-		List<Users> listaAmigos = new LinkedList<Users>();
-		
-		for (Users id : idFriends) {
-			listaAmigos.add(this.userService.get(id.getId()));
-		}
-
-        model.addAttribute("list", listaAmigos);
-        
+        model.addAttribute("list", friends);
         model.addAttribute("loginusername", loginUser.getUsername());
     	model.addAttribute("loginemailuser", loginUser.getEmail());
     	model.addAttribute("loginuserid", loginUser.getId());
@@ -319,16 +345,15 @@ public class UserController {
 
     /**
      * Dado um usuário logado, ele remove o amigo selecionado
-     * @param idUser
-     * @param idFriend
+     * @param idUser id do usuario
+     * @param idFriend id do amigo
      * @param model
      * @param ra
-     * @return
+     * @return pagina com os amigos atualizados do usuario
      */
     @RequestMapping(value = "/users/{idUser}/delete/friend/{idFriend}")
     public String deleteFriend(@PathVariable long idUser, @PathVariable long idFriend, Model model, final RedirectAttributes ra) {
     	String mensagem = "";
-    	        	
     	Users user = this.userService.get(idUser);
     	Users friend = this.userService.get(idFriend);
     	
@@ -349,8 +374,8 @@ public class UserController {
     
     /**
      * Pega a quantidade de amigos de um usuário
-     * @param idUser
-     * @return
+     * @param idUser id do usuario
+     * @return quantidade de amigos
      * @throws IOException
      */
     @RequestMapping(value = "/users/{idUser}/amount/friends")
@@ -360,6 +385,12 @@ public class UserController {
         return user.getAmountOfFriends();
     }
  
+    /**
+     * Seleciona uma imagem de um usuario
+     * @param idUser id do usuario
+     * @param model
+     * @return um formulario para fazer o upload de uma imagem do perfil do usuario
+     */
 	@RequestMapping(value = "/users/{idUser}/select/image")
 	public String selectImage(@PathVariable(value = "idUser") Long idUser, Model model){
 		Users editUser = userService.get(idUser);
@@ -374,19 +405,17 @@ public class UserController {
     	model.addAttribute("completename", editUser.getName());
     	
         return "users/formImage";
-
-		
 	}
 
 	/**
+	 * TODO é preciso zerar a sessão do usuário
 	 * Return registration form template
 	 * @param model
-	 * @param user
-	 * @return
+	 * @param user novo usuario que sera registrado
+	 * @return formulario para registro de um novo usuario. Um novo usuario recebe a permissao padrao USER.
 	 */
 	@RequestMapping(value = "/register", method = RequestMethod.GET)
 	public String showRegistrationPage(Model model){
-		//TODO é preciso zerar a sessão do usuário
 		model.addAttribute("user", new Users());		
 		return "/register";
 	}

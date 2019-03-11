@@ -16,7 +16,6 @@ import br.ufc.great.sysadmin.model.Role;
 import br.ufc.great.sysadmin.model.Users;
 import br.ufc.great.sysadmin.service.AuthoritiesService;
 import br.ufc.great.sysadmin.service.UsersService;
-import br.ufc.great.sysadmin.util.GeradorSenha;
 import br.ufc.great.sysadmin.util.MySessionInfo;
 
 /**
@@ -44,6 +43,9 @@ public class AccessControlController {
     	this.userService = userService;
     }
 	
+    /**
+     * Atualiza os dados do usuario logado
+     */
 	private void checkUser() {
 		loginUser = mySessionInfo.getCurrentUser();
 	}
@@ -56,8 +58,8 @@ public class AccessControlController {
     @RequestMapping(value="/accesscontrol", method = RequestMethod.GET)
     public String index(Model model) {
     	List<Role> authoritiesList = this.authoritiesService.getListAll();
-    	
     	checkUser();
+    	
     	model.addAttribute("list", authoritiesList);
     	model.addAttribute("loginusername", loginUser.getUsername());
     	model.addAttribute("loginemailuser", loginUser.getEmail());
@@ -114,10 +116,10 @@ public class AccessControlController {
     @RequestMapping(value = "/accesscontrol/users/saveedited", method = RequestMethod.POST)
     public String saveEdited(Users user, @RequestParam("nome") String authority, final RedirectAttributes ra) { 
     	Users userEdited = this.userService.get(user.getId());
-    	List<Users> idFriends = userEdited.getIdFriendsList();    	
+    	List<Users> friends = userEdited.getFriendsList();    	
     	List<Role> roles = new LinkedList<>();		
 		     	
-    	switch (checkAuthority(authority)) {
+    	switch (authoritiesService.checkAuthority(authority)) {
 		case "USER":
 			roles.add(authoritiesService.getRoleByNome("USER"));
 			userEdited.setRoles(roles);
@@ -131,32 +133,13 @@ public class AccessControlController {
 			ra.addFlashAttribute("successFlash", "A permissão não está registrada no sistema!");
 			break;
 		}
-    	userEdited.setIdFriendsList(idFriends);
+    	
+    	userEdited.setFriendsList(friends);
 		this.userService.save(userEdited);					
         ra.addFlashAttribute("successFlash", "As permissões do Usuário " + userEdited.getUsername() + " foram alteradas com sucesso.");
           				
         return "redirect:/accesscontrol/users";
     }
-
-    /**
-     * Verifica se a permissão foi registrada no sistema
-     * @param role permissão selecionada pelo usuário
-     * @return true se a permissão existe no sistema
-     */
-    private String checkAuthority(String role) {
-    	List<Role> roles = new LinkedList<>();
-    	roles = authoritiesService.getAll();
-    	String valor = null;
-    	
-    	for (Role elemento : roles) {
-    		if (elemento.getNome().equals(role)) {
-    			valor = elemento.getNome();
-    			break;
-    		}
-    	}
-    	
-		return valor;
-	}
     
 	/**
      * Adiciona uma nova permissão a um usário existente
@@ -173,7 +156,6 @@ public class AccessControlController {
     	model.addAttribute("loginuserid", loginUser.getId());
 
         return "accesscontrol/form";
-
     }
 
     /**
@@ -189,7 +171,6 @@ public class AccessControlController {
     	ra.addFlashAttribute("successFlash", "Permissão salva com sucesso.");
 
     	return "redirect:/accesscontrol";	
-    	
     }
     
     /**
@@ -209,8 +190,6 @@ public class AccessControlController {
     	model.addAttribute("loginuserid", loginUser.getId());
 
         return "accesscontrol/formEdit";
-
     }
- 
 
 }
