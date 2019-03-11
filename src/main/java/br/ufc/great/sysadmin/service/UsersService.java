@@ -26,10 +26,20 @@ public class UsersService extends AbstractService<Users, Long> implements UserDe
 		return usersRepository;
 	}
 	
+	/**
+	 * Busca um usuario pelo seu username
+	 * @param username do usuario
+	 * @return usuario
+	 */
 	public Users getUserByUserName(String username) {
 		return usersRepository.findByUsername(username);
 	}
 	
+	/**
+	 * Busca um usuario pelo seu email
+	 * @param email do usuario
+	 * @return usuario 
+	 */
 	public Users getUserByEmail(String email) {
 		return usersRepository.findByEmail(email);
 	}

@@ -6,7 +6,6 @@ import java.io.Serializable;
 /**
  * Classe abstrata para servir de base para as classes de modelo
  * @author armandosoaressousa
- *
  * @param <Long>
  */
 @MappedSuperclass

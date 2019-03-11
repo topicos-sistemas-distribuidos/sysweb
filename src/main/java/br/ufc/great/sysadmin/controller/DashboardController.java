@@ -68,12 +68,12 @@ public class DashboardController {
     		servico = servico + "/admin";
     		return "redirect:"+servico;
     	}
-    	if (mySessionInfo.hasRole("USER") && !mySessionInfo.hasRole("ADMIN") && !mySessionInfo.hasRole("STOREOWNER")) {
-    		servico = servico + "/user";
-    		return "redirect:"+servico;
-    	}
     	if (mySessionInfo.hasRole("STOREOWNER") && mySessionInfo.hasRole("USER")) {
     		servico = servico + "/storeowner";
+    		return "redirect:"+servico;
+    	}
+    	if (mySessionInfo.hasRole("USER")) {
+    		servico = servico + "/user";
     		return "redirect:"+servico;
     	}
 		return "redirec:/logout";    	           	    	

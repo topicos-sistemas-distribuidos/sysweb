@@ -7,6 +7,9 @@ obs: Não pode remover loja por que ela está associada a um usuário
 solução: remover a loja do usuário em cascata
 
 2. Erro ao remover usuário
+a) procurar o usuario e checar se existem amigos. OK
+b) remover a lista de permissoes do usuario. OK
+c) remover a lista de amigos originais. NO
 Obs: É preciso revisar as entidades dependentes de usuário e removê-las em cascata.
 
 3. Melhorar o controle de sessão do usuário
@@ -22,3 +25,7 @@ Obs: este erro não acontece na janela privada
 - mas ao fazer o logout o erro volta, ou seja, depois do logout ao tentar fazer novo login mostra a tela 404 de invalidSession
 
 Possível solução: criar uma nova sessão ao fazer o login
+
+5. Melhorar o formulário de cadastro de nova permissão (Incompleto)
+
+6. Melhorar o formulário de permissão de usuário (Incompleto)
