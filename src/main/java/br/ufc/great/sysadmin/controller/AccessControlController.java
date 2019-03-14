@@ -101,7 +101,6 @@ public class AccessControlController {
         model.addAttribute("loginusername", loginUser.getUsername());
     	model.addAttribute("loginemailuser", loginUser.getEmail());
     	model.addAttribute("loginuserid", loginUser.getId());
-    	model.addAttribute("amountoffriends", editUser.getAmountOfFriends());
     	
         return "accesscontrol/formAuthority";
     }
@@ -115,8 +114,7 @@ public class AccessControlController {
      */
     @RequestMapping(value = "/accesscontrol/users/saveedited", method = RequestMethod.POST)
     public String saveEdited(Users user, @RequestParam("nome") String authority, final RedirectAttributes ra) { 
-    	Users userEdited = this.userService.get(user.getId());
-    	List<Users> friends = userEdited.getFriendsList();    	
+    	Users userEdited = this.userService.get(user.getId());  	
     	List<Role> roles = new LinkedList<>();		
 		     	
     	switch (authoritiesService.checkAuthority(authority)) {
@@ -134,7 +132,6 @@ public class AccessControlController {
 			break;
 		}
     	
-    	userEdited.setFriendsList(friends);
 		this.userService.save(userEdited);					
         ra.addFlashAttribute("successFlash", "As permissões do Usuário " + userEdited.getUsername() + " foram alteradas com sucesso.");
           				
