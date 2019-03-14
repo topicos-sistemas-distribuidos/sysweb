@@ -86,7 +86,6 @@ public class FileUploadController {
 		model.addAttribute("loginusername", loginUser.getUsername());
 		model.addAttribute("loginemailuser", loginUser.getEmail());
 		model.addAttribute("loginuserid", loginUser.getId());
-		model.addAttribute("amountoffriends", user.getAmountOfFriends());
 		model.addAttribute("successFlash", "Successfully uploaded files "+fileNames.toString());
 
 		return "uploads/formpwd";

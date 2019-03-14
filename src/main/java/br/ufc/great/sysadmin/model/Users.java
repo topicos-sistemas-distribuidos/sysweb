@@ -40,15 +40,10 @@ public class Users extends AbstractModel<Long> implements UserDetails{
 	@ManyToMany(fetch = FetchType.EAGER)
 	private List<Role> roles = new LinkedList<Role>();
 	
-	@LazyCollection(LazyCollectionOption.FALSE)
-	@JsonBackReference(value="user-friend")
-	@ManyToMany(fetch = FetchType.LAZY)
- 	private List<Users> friendsList = new LinkedList<Users>();
 	@Column(length=255)	
 	private String name;
 	
 	public Users() {
-		this.friendsList = new LinkedList<Users>();
 	}
 	
 	public Users(String username, String password, String email) {
@@ -112,82 +107,7 @@ public class Users extends AbstractModel<Long> implements UserDetails{
 	public void setLongitude(double longitude) {
 		this.longitude = longitude;
 	}
-
-	/**
-	 * Lista todos os amigos do usuario
-	 * @return List<Users> lista de amigos do usuario
-	 */
-	public List<Users> getFriendsList() {
-		return friendsList;
-	}
-
-	/**
-	 * Atualiza a lista de amigos do usuario
-	 * @param friendsList
-	 */
-	public void setFriendsList(List<Users> friendsList) {
-		this.friendsList = friendsList;
-	}
-	
-	/**
-	 * Adiciona um novo amigo ao usuario
-	 * @param friend
-	 * @return true se o amigo foi adicionado com sucesso
-	 */
-	public boolean addFriend(Users friend) {
-		if (!alreadyFriend(friend)) {
-			this.friendsList.add(friend);	
-			return true;
-		}else {
-			return false;
-		} 
-	}
-	
-	/**
-	 * Checa se o usuario amigo já é amigo do usuario corrente
-	 * @param friend
-	 * @return true se o amigo já é amigo do usuario
-	 */
-	public boolean alreadyFriend(Users friend) {
-		//percorre a lista de amigos e checa se o amigo já está nela
-		for (Users user : this.friendsList) {
-			if (user.getId() == friend.getId()) {
-				return true;
-			}
-		}
-		return false;
-	}
-	
-	/**
-	 * Dado um amigo, revove esse amigo da lista de amigos do usuario
-	 * @param friend amigo que sera removido
-	 * @return true se o amigo foi removido com sucesso
-	 */
-	public boolean deleteFriend(Users friend) {		
-		//pega a lista de amigos
-		List<Users> listaAux = this.getFriendsList();
-		int tamanhoListaAux = listaAux.size();
-		boolean achou=false;
-		//encontra o indice do usuario a ser removido
-		for (int i=0; i < tamanhoListaAux; i++) {
-			if (listaAux.get(i).getId() == friend.getId()) {			
-				this.friendsList.remove(i);
-				achou=true;
-				break;
-			}
-		}
 		
-		return achou;
-	}
-		
-	/**
-	 * Quantidade de amigos do usuario
-	 * @return quantidade de amigos
-	 */
-	public int getAmountOfFriends() {
-		return this.getFriendsList().size();
-	}
-
 	public String getName() {
 		return name;
 	}

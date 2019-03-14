@@ -137,7 +137,6 @@ public class UserController {
         model.addAttribute("loginusername", loginUser.getUsername());
     	model.addAttribute("loginemailuser", loginUser.getEmail());
     	model.addAttribute("loginuserid", loginUser.getId());
-    	model.addAttribute("amountoffriends", editUser.getAmountOfFriends());
     	
         return "users/formpwd";
     }
@@ -152,14 +151,11 @@ public class UserController {
     public String editProfile(@PathVariable Long id, Model model) {
     	checkUser();
 		Users user = this.userService.get(loginUser.getId());
-		List<Users> friends = user.getFriendsList();		
 
-		model.addAttribute("listfriends", friends);
         model.addAttribute("user", loginUser);
         model.addAttribute("loginusername", loginUser.getUsername());
     	model.addAttribute("loginemailuser", loginUser.getEmail());
     	model.addAttribute("loginuserid", loginUser.getId());    	
-    	model.addAttribute("amountoffriends", loginUser.getAmountOfFriends());
     	
         return "users/formpwdProfile";
 
@@ -227,10 +223,8 @@ public class UserController {
     	Users userOriginal = userService.get(user.getId());
     	recuperaPasswordBanco = userOriginal.getPassword();
     	
-    	List<Users> friends = userOriginal.getFriendsList();    	
     	List<Role> roles = userOriginal.getRoles();		
 		     	    	
-    	user.setFriendsList(friends);
     	user.setRoles(roles);
     	
     	if (newPassword.equals(confirmNewPassword)){
@@ -262,16 +256,7 @@ public class UserController {
     	Users userToDelete = this.userService.get(id);
     	
     	nome = userToDelete.getName();
-    	//Lista de amigos a ser removida
-    	List<Users> friendsToDelete = userToDelete.getFriendsList();
-    	
-    	if (friendsToDelete.isEmpty()) {
-    		userToDelete.getRoles().clear();
-    		userService.delete(id);
-    		mensagem =  "Usuário " + nome + " removido com sucesso!";
-    	}else {
-    		mensagem = "O usuário não pode ser removido, pois ainda possui amigos associados!"; 
-    	}
+    	mensagem =  "Usuário " + nome + " removido com sucesso!";
     	
     	ra.addFlashAttribute("successFlash", mensagem);
         return "redirect:/users";
@@ -294,97 +279,7 @@ public class UserController {
         
         return "users/listAllUsers";
     }
-    
-    /**
-     * Dado um usuário ele adiciona um amigo
-     * @param idUser usuário logado
-     * @param idFriend id do amigo
-     * @param model
-     * @param ra
-     * @return pagina com os amigos atualizados
-     */
-    @RequestMapping(value = "/users/{idUser}/add/friend/{idFriend}")
-    public String addFriend(@PathVariable long idUser, @PathVariable long idFriend, Model model, final RedirectAttributes ra) {
-    	String mensagem="";    	        	
-    	Users user = this.userService.get(idUser);
-    	Users friend = this.userService.get(idFriend);
-    	
-    	if (user.addFriend(friend)) {
-    		this.userService.save(user);
-    		if (friend.addFriend(user)){
-    			this.userService.save(friend);	
-    		}    		
-    		mensagem = "O amigo foi salvo com sucesso.";
-    	}else {
-    		mensagem = "O amigo já existe!!!!.";
-    	}
-
-    	ra.addFlashAttribute("successFlash", mensagem);
-    	return "redirect:/users/list";	
-    }
-
-    /**
-     * Dado um usuário logado lista os amigos dele
-     * @param idUser id do usuario
-     * @param model
-     * @return pagina contendo todos os amigos do usuario
-     */
-    @RequestMapping(value = "/users/{idUser}/list/friends", method = RequestMethod.GET)
-    public String listFriends(@PathVariable long idUser, Model model) {    
-    	checkUser();
-		Users user = this.userService.get(idUser);
-		List<Users> friends = user.getFriendsList();
-		
-        model.addAttribute("list", friends);
-        model.addAttribute("loginusername", loginUser.getUsername());
-    	model.addAttribute("loginemailuser", loginUser.getEmail());
-    	model.addAttribute("loginuserid", loginUser.getId());
-        
-        return "users/listFriends";
-    }
-
-    /**
-     * Dado um usuário logado, ele remove o amigo selecionado
-     * @param idUser id do usuario
-     * @param idFriend id do amigo
-     * @param model
-     * @param ra
-     * @return pagina com os amigos atualizados do usuario
-     */
-    @RequestMapping(value = "/users/{idUser}/delete/friend/{idFriend}")
-    public String deleteFriend(@PathVariable long idUser, @PathVariable long idFriend, Model model, final RedirectAttributes ra) {
-    	String mensagem = "";
-    	Users user = this.userService.get(idUser);
-    	Users friend = this.userService.get(idFriend);
-    	
-    	if (user.deleteFriend(friend)) {        	 
-        	this.userService.save(user);
-        	if(friend.deleteFriend(user)) {
-        		this.userService.save(friend);
-        	}
-        	mensagem = "Amigo removido com sucesso!";
-    	}else {
-    		mensagem = "O amigo não foi removido."; 
-    	}
-    	
-    	ra.addFlashAttribute("successFlash", mensagem);
-    	String local = "/users/"+idUser+"/list/friends";
-    	return "redirect:"+local;
-    }
-    
-    /**
-     * Pega a quantidade de amigos de um usuário
-     * @param idUser id do usuario
-     * @return quantidade de amigos
-     * @throws IOException
-     */
-    @RequestMapping(value = "/users/{idUser}/amount/friends")
-    @ResponseBody
-    public int getAmountOfFriends(@PathVariable(value = "idUser") Long idUser) throws IOException {
-    	Users user = this.userService.get(idUser);    	
-        return user.getAmountOfFriends();
-    }
- 
+         
     /**
      * Seleciona uma imagem de um usuario
      * @param idUser id do usuario
