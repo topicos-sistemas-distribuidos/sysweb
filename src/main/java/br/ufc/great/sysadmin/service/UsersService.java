@@ -7,6 +7,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import br.ufc.great.sysadmin.model.Person;
 import br.ufc.great.sysadmin.model.Users;
 import br.ufc.great.sysadmin.repository.IUsersRepository;
 
@@ -42,6 +43,15 @@ public class UsersService extends AbstractService<Users, Long> implements UserDe
 	 */
 	public Users getUserByEmail(String email) {
 		return usersRepository.findByEmail(email);
+	}
+	
+	/**
+	 * Find a user by Person
+	 * @param person Person
+	 * @return User
+	 */
+	public Users getUserByPerson(Person person) {
+		return usersRepository.findByPerson(person);
 	}
 
 	@Override

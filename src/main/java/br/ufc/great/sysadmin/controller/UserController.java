@@ -1,6 +1,5 @@
 package br.ufc.great.sysadmin.controller;
 
-import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -12,13 +11,11 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import br.ufc.great.sysadmin.model.Role;
 import br.ufc.great.sysadmin.model.Users;
 import br.ufc.great.sysadmin.service.AuthoritiesService;
-import br.ufc.great.sysadmin.service.MyStoresService;
 import br.ufc.great.sysadmin.service.UsersService;
 import br.ufc.great.sysadmin.util.GeradorSenha;
 import br.ufc.great.sysadmin.util.MySessionInfo;
@@ -33,7 +30,6 @@ public class UserController {
 	private UsersService userService;
 	private Users loginUser;
 	private AuthoritiesService authoritiesService;
-	private MyStoresService myStoresService;
 	
 	@Autowired
 	private MySessionInfo mySessionInfo;
@@ -46,11 +42,6 @@ public class UserController {
 	@Autowired
 	public void setAuthoritiesService(AuthoritiesService authoritiesService) {
 		this.authoritiesService = authoritiesService;
-	}
-	
-	@Autowired
-	public void setMyStoresService(MyStoresService myStoresService) {
-		this.myStoresService = myStoresService;
 	}
 	
 	/*
@@ -183,11 +174,6 @@ public class UserController {
 			roles.add(authoritiesService.getRoleByNome("USER"));
 			user.setRoles(roles);
 			break;
-		case "STOREOWNER":
-			roles.add(authoritiesService.getRoleByNome("STOREOWNER"));
-			roles.add(authoritiesService.getRoleByNome("USER"));
-			user.setRoles(roles);
-			break;
 		default:
 			ra.addFlashAttribute("successFlash", "A permissão não está registrada no sistema!");
 			break;
@@ -255,7 +241,7 @@ public class UserController {
     	String nome="";
     	Users userToDelete = this.userService.get(id);
     	
-    	nome = userToDelete.getName();
+    	nome = userToDelete.getUsername();
     	mensagem =  "Usuário " + nome + " removido com sucesso!";
     	
     	ra.addFlashAttribute("successFlash", mensagem);
@@ -297,7 +283,6 @@ public class UserController {
     	model.addAttribute("loginuserid", loginUser.getId());
     	model.addAttribute("idUser", editUser.getId());
     	model.addAttribute("username", editUser.getUsername());
-    	model.addAttribute("completename", editUser.getName());
     	
         return "users/formImage";
 	}
@@ -347,16 +332,8 @@ public class UserController {
 					return "/login";				
 				}
 				
-				//checa o tipo do usuário
-				if (authority.equals("LOJISTA")) {			
-					authorities = authoritiesService.getRoleByNome("STOREOWNER");
-					List<Role> roles = new LinkedList<>();
-					roles.add(authorities);
-					user.setRoles(roles);
-					this.userService.save(user);					
-					model.addAttribute("msg", "Usuário lojista registrado com sucesso!");
-					return "/login";				
-				}	        	
+				//checa demais tipos de permissões
+				
 			}else {
 				ra.addFlashAttribute("msgerro", "Senha não confere!");
 				return "redirect:/register";

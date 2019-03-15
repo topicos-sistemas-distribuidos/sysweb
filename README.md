@@ -5,8 +5,7 @@ Features
 ---
 
 * CRUD de usuários
-* CRUD de lojistas
-* Controle de autenticação de usuários e lojistas
+* Controle de autenticação de usuários
 * Camada de segurança
 
 Sobre as operações para execução da aplicação

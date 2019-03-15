@@ -122,11 +122,6 @@ public class AccessControlController {
 			roles.add(authoritiesService.getRoleByNome("USER"));
 			userEdited.setRoles(roles);
 			break;
-		case "STOREOWNER":
-			roles.add(authoritiesService.getRoleByNome("STOREOWNER"));
-			roles.add(authoritiesService.getRoleByNome("USER"));
-			userEdited.setRoles(roles);
-			break;
 		default:
 			ra.addFlashAttribute("successFlash", "A permissão não está registrada no sistema!");
 			break;

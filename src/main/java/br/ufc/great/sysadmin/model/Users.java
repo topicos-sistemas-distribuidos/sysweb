@@ -8,14 +8,11 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.ManyToMany;
+import javax.persistence.OneToOne;
 
-import org.hibernate.annotations.LazyCollection;
-import org.hibernate.annotations.LazyCollectionOption;
 import org.hibernate.annotations.Type;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-
-import com.fasterxml.jackson.annotation.JsonBackReference;
 
 /**
  * Classe modelo de Usuário
@@ -33,19 +30,23 @@ public class Users extends AbstractModel<Long> implements UserDetails{
 	@Type(type = "org.hibernate.type.NumericBooleanType")
 	private boolean enabled;
 	@Column(length=255)
-	private String email;	
-	private double latitude=0;
-	private double longitude=0;
-	
+	private String email;		
 	@ManyToMany(fetch = FetchType.EAGER)
 	private List<Role> roles = new LinkedList<Role>();
-	
-	@Column(length=255)	
-	private String name;
+	@OneToOne
+	private Person person = new Person();
 	
 	public Users() {
 	}
 	
+	public Person getPerson() {
+		return person;
+	}
+
+	public void setPerson(Person person) {
+		this.person = person;
+	}
+
 	public Users(String username, String password, String email) {
 		super();
 		this.username = username;
@@ -68,12 +69,6 @@ public class Users extends AbstractModel<Long> implements UserDetails{
 		this.email = email;
 	}
 	
-	public Long getId() {
-		Long id;
-		id = super.getId();
-		return id;
-	}
-
 	@Override
 	public String getUsername() {
 		return username;
@@ -91,31 +86,7 @@ public class Users extends AbstractModel<Long> implements UserDetails{
 	public void setEnabled(boolean enabled) {
 		this.enabled = enabled;
 	}
-
-	public double getLatitude() {
-		return latitude;
-	}
-
-	public void setLatitude(double latitude) {
-		this.latitude = latitude;
-	}
-
-	public double getLongitude() {
-		return longitude;
-	}
-
-	public void setLongitude(double longitude) {
-		this.longitude = longitude;
-	}
-		
-	public String getName() {
-		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
-	}
-
+	
 	/**
 	 * Lista as permissoes do usuario
 	 * @return lista de permissoes
